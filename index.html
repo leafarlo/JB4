@@ -428,7 +428,7 @@
 <div class="modal-overlay" id="group-picker-overlay" onclick="if(event.target===this)closeGroupPicker()">
   <div class="modal" style="max-width:540px;">
     <h3>Choose your group</h3>
-    <p>Select your group to download all your duties as a calendar file (.ics).</p>
+    <p>📅 <strong>Add</strong> downloads all your duties as a .ics file. 🗑️ <strong>Remove</strong> downloads a cancel file — import it to delete all events at once.</p>
     <div id="group-picker-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"></div>
     <div class="modal-btns" style="margin-top:16px;">
       <button class="btn-close" onclick="closeGroupPicker()">Cancel</button>
@@ -919,12 +919,15 @@ function renderSecretsTable() {
 // GROUP CALENDAR EXPORT
 // ══════════════════════════════════════════════
 function openGroupPicker() {
-  const pad = n => String(n).padStart(2,'0');
   const hdrColors = {G1:'#2a2200',G2:'#0a1e3a',G3:'#1e0a2e',G4:'#2e0a0a',G5:'#0a1e0a'};
   document.getElementById('group-picker-cards').innerHTML = GROUPS.map(g => `
-    <div onclick="exportGroupICS('${g.id}')" style="cursor:pointer;border-radius:9px;overflow:hidden;border:1px solid var(--cream-dark);transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 14px var(--shadow)'" onmouseout="this.style.boxShadow='none'">
+    <div style="border-radius:9px;overflow:hidden;border:1px solid var(--cream-dark);">
       <div style="background:${hdrColors[g.id]};padding:10px 14px;font-family:'Playfair Display',serif;font-size:14px;color:#fff;">${g.name}</div>
-      <div style="padding:10px 14px;font-size:12px;color:var(--text-light);line-height:1.6;">${g.members.map(m=>m.name).join('<br>')}</div>
+      <div style="padding:8px 14px 4px;font-size:12px;color:var(--text-light);line-height:1.6;">${g.members.map(m=>m.name).join('<br>')}</div>
+      <div style="padding:8px 14px 12px;display:flex;gap:8px;">
+        <button onclick="exportGroupICS('${g.id}',false)" style="flex:1;padding:7px 0;background:var(--gold);color:var(--green-deep);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">📅 Add</button>
+        <button onclick="exportGroupICS('${g.id}',true)" style="flex:1;padding:7px 0;background:var(--warm-white);color:#c0392b;border:1px solid #c0392b;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">🗑️ Remove</button>
+      </div>
     </div>`).join('');
   document.getElementById('group-picker-overlay').classList.add('open');
 }
@@ -933,33 +936,58 @@ function closeGroupPicker() {
   document.getElementById('group-picker-overlay').classList.remove('open');
 }
 
-function exportGroupICS(gid) {
+function exportGroupICS(gid, cancel) {
   closeGroupPicker();
   const g = GROUPS.find(x => x.id === gid);
-  const pad = n => String(n).padStart(2,'0');
+  const pad = n => String(n).padStart(2, '0');
+
+  const fmtDT = (d, h, m = 0) =>
+    `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(h)}${pad(m)}00`;
+
+  const alarm = `BEGIN:VALARM\r\nTRIGGER:-PT0M\r\nACTION:DISPLAY\r\nDESCRIPTION:Reminder\r\nEND:VALARM\r\n`;
+
+  const vevent = (uid, dtstart, dtend, summary, desc) => {
+    const status = cancel ? 'STATUS:CANCELLED\r\n' : '';
+    const alm    = cancel ? '' : alarm;
+    return `BEGIN:VEVENT\r\nUID:${uid}\r\nDTSTART:${dtstart}\r\nDTEND:${dtend}\r\nSUMMARY:${summary}\r\nDESCRIPTION:${desc}\r\nLOCATION:Jardin Botanique 4\\, Brussels\r\n${status}${alm}END:VEVENT\r\n`;
+  };
+
   let events = '';
 
   TRASH_SCHEDULE.forEach(t => {
-    const wi = weekIdx(new Date(t.date));
-    const tg = trashGroupForWeek(wi);
-    const dg = dishGroupForWeek(wi);
-    const d = new Date(t.date);
-    const icsDate = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+    const sun = new Date(t.date);                            // Sunday of that week
+    const mon = new Date(sun); mon.setDate(sun.getDate()+1); // Monday  (Blue collection)
+    const thu = new Date(sun); thu.setDate(sun.getDate()+4); // Thursday (Yellow collection)
+    const fri = new Date(sun); fri.setDate(sun.getDate()+5); // Friday  (Green collection)
+    const wi  = weekIdx(sun);
+    const tg  = trashGroupForWeek(wi);
+    const dg  = dishGroupForWeek(wi);
+    const mem = names(g);
 
     if (tg.id === gid) {
-      events += `BEGIN:VEVENT\r\nUID:${gid}-${t.date}-trash@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:🗑️ Trash duty — ${g.name}\r\nDESCRIPTION:${t.label}. Put bags outside the evening before (Mon/Thu) or by 9am (Fri). Members: ${names(g)}\r\nLOCATION:Jardin Botanique 4\\, Brussels\r\nEND:VEVENT\r\n`;
+      events += vevent(`${gid}-${t.date}-glass@jb4`,  fmtDT(sun,18), fmtDT(sun,18,30),
+        `⬜ Glass out — ${g.name}`,  `Put glass outside Sunday evening. ${mem}`);
+      events += vevent(`${gid}-${t.date}-blue@jb4`,   fmtDT(mon,18), fmtDT(mon,18,30),
+        `🔵 Blue bags out — ${g.name}`, `Put blue/PMC bags outside. ${mem}`);
+      events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,18), fmtDT(thu,18,30),
+        `🟡 Yellow bags out — ${g.name}`, `Put yellow bags outside. ${mem}`);
+      events += vevent(`${gid}-${t.date}-green@jb4`,  fmtDT(fri,18), fmtDT(fri,18,30),
+        `🟢 Green bags out — ${g.name}`, `Put green/organic bags outside. ${mem}`);
     }
+
     if (dg.id === gid) {
-      events += `BEGIN:VEVENT\r\nUID:${gid}-${t.date}-dishes@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:🍽️ Dishwasher duty — ${g.name}\r\nDESCRIPTION:Empty dishwasher before 10:00 AM each morning this week. Members: ${names(g)}\r\nLOCATION:Jardin Botanique 4\\, Brussels\r\nEND:VEVENT\r\n`;
+      events += vevent(`${gid}-${t.date}-dishes@jb4`, fmtDT(mon,8), fmtDT(mon,8,30),
+        `🍽️ Dishwasher week — ${g.name}`, `Your group empties the dishwasher this week (daily before 10:00). ${names(g)}`);
     }
   });
 
-  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JB4//Dashboard//EN\r\nX-WR-CALNAME:JB4 Duties — ${g.name}\r\nX-WR-TIMEZONE:Europe/Brussels\r\n${events}END:VCALENDAR`;
+  const method = cancel ? 'METHOD:CANCEL\r\n' : '';
+  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JB4//Dashboard//EN\r\n${method}X-WR-CALNAME:JB4 Duties — ${g.name}\r\nX-WR-TIMEZONE:Europe/Brussels\r\n${events}END:VCALENDAR`;
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
-  a.download = `jb4-duties-${gid.toLowerCase()}.ics`;
+  a.download = `jb4-${gid.toLowerCase()}-duties${cancel ? '-CANCEL' : ''}.ics`;
   a.click();
-  showToast(`Full calendar downloaded for ${g.name} 📅`);
+  showToast(cancel ? `Cancel file ready — import it to remove all events` : `Calendar downloaded for ${g.name} 📅`);
 }
 
 // ══════════════════════════════════════════════
