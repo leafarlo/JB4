@@ -59,6 +59,10 @@
   .card-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--green-deep); margin-bottom:14px; display:flex; align-items:center; gap:9px; }
   .card-icon { width:30px; height:30px; background:var(--green-pale); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:15px; }
 
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .bounce { animation:bounce 1s ease-in-out infinite; display:inline-block; }
+  .kitchen-warn { color:#c0392b; font-weight:600; font-size:14px; text-align:center; margin-bottom:18px; letter-spacing:.03em; }
+
   /* HOME GRID */
   .home-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
   @media(max-width:700px){.home-grid{grid-template-columns:1fr;}}
@@ -192,15 +196,15 @@
 
 <!-- HEADER -->
 <div class="site-header">
-  <div class="house-eyebrow">Brussels · Ixelles</div>
+  <div class="house-eyebrow">Brussels </div>
   <div class="house-title">Jardin <em>Botanique</em> 4</div>
-  <div class="house-meta">23 residents · 5 groups · Community dashboard</div>
+  <div class="house-meta">Community dashboard</div>
   <nav class="nav">
     <button class="nav-btn active" onclick="showTab('home',this)">Home</button>
     <button class="nav-btn" onclick="showTab('calendar',this)">Calendar</button>
     <button class="nav-btn" onclick="showTab('residents',this)">Residents</button>
     <button class="nav-btn" onclick="showTab('newcomer',this)">Newcomer Guide</button>
-    <button class="nav-btn" onclick="showTab('secrets',this)">⚙️ Email Setup</button>
+    <button class="nav-btn" onclick="showTab('secrets',this)" style="display:none">⚙️ Email Setup</button>
   </nav>
 </div>
 
@@ -208,6 +212,7 @@
 
 <!-- ══════════ HOME ══════════ -->
 <div class="tab-panel active" id="tab-home">
+  <div class="kitchen-warn"><span class="bounce">🍳 Please clean the kitchen after use! 🍳</span></div>
   <div class="home-grid">
 
     <div class="card week-card">
@@ -218,13 +223,6 @@
     <div class="card">
       <div class="card-title"><div class="card-icon">📋</div>House Rules</div>
       <div id="rules"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title"><div class="card-icon">🗳️</div>Community Poll</div>
-      <div style="font-size:14px;color:var(--text-mid);margin-bottom:12px;font-weight:500;">How was the house cleanliness this week?</div>
-      <div id="poll"></div>
-      <div style="font-size:12px;color:var(--text-light);margin-top:6px;" id="poll-status">Click to vote</div>
     </div>
 
     <div class="card">
@@ -246,6 +244,11 @@
 <div class="tab-panel" id="tab-calendar">
   <div class="section-title">Planning Calendar</div>
   <div class="section-sub">Trash collection & dishwasher duties · Feb 2025 – Dec 2026</div>
+
+  <div style="margin-bottom:18px;">
+    <button onclick="openGroupPicker()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--gold);color:var(--green-deep);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.03em;">📅 Add my duties to calendar</button>
+    <span style="font-size:12px;color:var(--text-light);margin-left:12px;">Download all your group's duties as a .ics file</span>
+  </div>
 
   <div class="filter-row">
     <span style="font-size:12px;color:var(--text-light);">Filter:</span>
@@ -278,28 +281,24 @@
 <div class="tab-panel" id="tab-newcomer">
   <div class="nc-hero">
     <h2>Welcome to Jardin Botanique 4 🌱</h2>
-    <p>We're glad you're here. This guide covers everything you need to know to feel at home from day one — 23 people, one community.</p>
   </div>
   <div class="info-grid">
     <div class="info-card">
       <h3>🏠 Common Areas</h3>
       <ul class="info-list">
-        <li>Shared kitchen on each floor</li>
+        <li>Shared kitchen</li>
         <li>Living room / lounge area</li>
-        <li>Shared bathrooms & WCs</li>
         <li>Laundry room (ground floor)</li>
-        <li>Bike storage (basement)</li>
-        <li>Garden / terrace</li>
+        <li>Bike storage (ground floor)</li>
+        <li>Garden / terrace, shared with house 6 and 8</li>
       </ul>
     </div>
     <div class="info-card">
       <h3>🍳 Your Kitchen Space</h3>
       <ul class="info-list">
-        <li>1 fridge rack — label with your room number</li>
-        <li>1 drawer in the kitchen — yours to keep</li>
-        <li>Label your food clearly with your name</li>
-        <li>Never use others' labelled items</li>
-        <li>Clean up immediately after cooking</li>
+        <li>1 fridge rack — label with your name</li>
+        <li>1 storage space in the kitchen — label with your name</li>
+        <li style="color:#c0392b;font-weight:600;"><span class="bounce">SUPER IMPORTANT: Clean up immediately after cooking</span></li>
       </ul>
     </div>
     <div class="info-card">
@@ -327,18 +326,16 @@
       <ul class="info-list">
         <li>Quiet hours: 11pm – 8am</li>
         <li>No smoking indoors</li>
-        <li>Guests max 3 nights/week</li>
         <li>Clean common areas after use</li>
-        <li>Report maintenance via Cohabs app</li>
       </ul>
     </div>
     <div class="info-card">
       <h3>📞 Contacts</h3>
       <ul class="info-list">
-        <li>House Ambassador — ask in the group chat</li>
-        <li>Cohabs: cohabs.com</li>
+        <li>House Ambassador (Rafael), just ask in the group chat</li>
+        <li>Cohabs: will add later</li>
         <li>Emergency maintenance: Cohabs app</li>
-        <li>House WhatsApp: ask ambassador</li>
+        <li>House WhatsApp group</li>
       </ul>
     </div>
   </div>
@@ -348,7 +345,7 @@
     <div style="text-align:right;margin-bottom:8px;">
       <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf" download style="font-size:12px;color:var(--green-light);text-decoration:none;padding:6px 12px;border:1px solid rgba(74,124,47,.3);border-radius:5px;background:rgba(74,124,47,.08);">⬇ Download PDF</a>
     </div>
-    <iframe src="Welcome%20to%20Cohabs%20-%20Brussels.pdf" style="width:100%;height:680px;border-radius:10px;border:1px solid var(--cream-dark);">
+    <iframe src="Welcome%20to%20Cohabs%20-%20Brussels.pdf#zoom=page-width" style="width:100%;height:85vh;border-radius:10px;border:1px solid var(--cream-dark);">
       <p style="padding:20px;color:var(--text-light);">Your browser can't display PDFs inline. <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf">Download it here.</a></p>
     </iframe>
   </div>
@@ -393,6 +390,17 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="group-picker-overlay" onclick="if(event.target===this)closeGroupPicker()">
+  <div class="modal" style="max-width:540px;">
+    <h3>Choose your group</h3>
+    <p>Select your group to download all your duties as a calendar file (.ics).</p>
+    <div id="group-picker-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"></div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-close" onclick="closeGroupPicker()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -402,41 +410,41 @@
 const GROUPS = [
   { id:'G1', name:'Group 1', color:'g1b', hdr:'gh-g1',
     members:[
-      {room:'101', name:'Alex'},
-      {room:'102', name:'Gianluca'},
-      {room:'103', name:'Stevan'},
-      {room:'104', name:'Anna'},
+      {room:'101', name:'Name 1'},
+      {room:'102', name:'Name 2'},
+      {room:'103', name:'Name 3'},
+      {room:'104', name:'Name 4'},
       {room:'105', name:'Rafael'},
     ]},
   { id:'G2', name:'Group 2', color:'g2b', hdr:'gh-g2',
     members:[
-      {room:'201', name:'Claudia'},
-      {room:'202', name:'Aurelien'},
-      {room:'203', name:'Eduard'},
-      {room:'204', name:'Antonio'},
-      {room:'205', name:'Victoria'},
+      {room:'201', name:'Name 5'},
+      {room:'202', name:'Name 6'},
+      {room:'203', name:'Name 7'},
+      {room:'204', name:'Name 8'},
+      {room:'205', name:'Name 9'},
     ]},
   { id:'G3', name:'Group 3', color:'g3b', hdr:'gh-g3',
     members:[
-      {room:'301', name:'Maria'},
-      {room:'302', name:'Larissa'},
-      {room:'303', name:'Ayman'},
-      {room:'304', name:'Almudena'},
-      {room:'305', name:'Samy'},
+      {room:'301', name:'Name 10'},
+      {room:'302', name:'Name 11'},
+      {room:'303', name:'Name 12'},
+      {room:'304', name:'Name 13'},
+      {room:'305', name:'Name 14'},
     ]},
   { id:'G4', name:'Group 4', color:'g4b', hdr:'gh-g4',
     members:[
-      {room:'401', name:'Maxine'},
-      {room:'402', name:'Tadeusz'},
-      {room:'403', name:'Adithi'},
-      {room:'404', name:'Gergo'},
+      {room:'401', name:'Name 15'},
+      {room:'402', name:'Name 16'},
+      {room:'403', name:'Name 17'},
+      {room:'404', name:'Name 18'},
     ]},
   { id:'G5', name:'Group 5', color:'g5b', hdr:'gh-g5',
     members:[
-      {room:'501', name:'Franco'},
-      {room:'502', name:'Erwann'},
-      {room:'503', name:'Aysegul'},
-      {room:'504', name:'???'},
+      {room:'501', name:'Name 19'},
+      {room:'502', name:'Name 20'},
+      {room:'503', name:'Name 21'},
+      {room:'504', name:'Name 22'},
     ]},
 ];
 
@@ -665,39 +673,6 @@ function renderRules() {
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════════
-// RENDER: POLL
-// ══════════════════════════════════════════════
-const pollOpts = [
-  {label:'⭐⭐⭐⭐⭐ Spotless — everyone did great!', votes:4},
-  {label:'⭐⭐⭐⭐ Good, minor issues', votes:7},
-  {label:'⭐⭐⭐ Room for improvement', votes:5},
-  {label:'⭐⭐ A few people didn\'t pull their weight', votes:2},
-];
-let pollVoted = false;
-
-function renderPoll() {
-  const total = pollOpts.reduce((a,b)=>a+b.votes,0);
-  document.getElementById('poll').innerHTML = pollOpts.map((o,i)=>`
-    <div class="poll-opt" onclick="vote(${i})">
-      <div class="poll-bar-wrap">
-        <div class="poll-bar-label">${o.label}</div>
-        <div class="poll-bar-track">
-          <div class="poll-bar-fill" style="width:${pollVoted?Math.round(o.votes/total*100):0}%"></div>
-        </div>
-      </div>
-      ${pollVoted?`<span class="poll-pct">${Math.round(o.votes/total*100)}%</span>`:''}
-    </div>`).join('');
-}
-
-function vote(i) {
-  if (pollVoted) return;
-  pollOpts[i].votes++;
-  pollVoted = true;
-  document.getElementById('poll-status').textContent = 'Thanks! Results:';
-  renderPoll();
-  showToast('Vote recorded ✓');
-}
 
 // ══════════════════════════════════════════════
 // RENDER: CALENDAR
@@ -724,10 +699,6 @@ function renderCalendar() {
           <span class="bag-tag ${bagClass(t.type)}">${bagEmoji(t.type)} ${t.label}</span>
         </div>
         <div class="chips">${tg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
-        <div class="cal-actions">
-          <button class="act-btn ics-btn" onclick="exportICS('${tg.id}','${t.date}','trash','${t.label}')">📅 Add to calendar</button>
-          <button class="act-btn msg-btn" onclick="openReminder('${tg.id}','${t.date}','trash','${t.label}')">💬 Reminder</button>
-        </div>
       </div>
     </div>`;
 
@@ -743,10 +714,6 @@ function renderCalendar() {
           <span style="font-size:12px;color:var(--text-light);">Empty by 10:00 AM</span>
         </div>
         <div class="chips">${dg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
-        <div class="cal-actions">
-          <button class="act-btn ics-btn" onclick="exportICS('${dg.id}','${t.date}','dishes','Dishwasher duty')">📅 Add to calendar</button>
-          <button class="act-btn msg-btn" onclick="openReminder('${dg.id}','${t.date}','dishes','Dishwasher duty')">💬 Reminder</button>
-        </div>
       </div>
     </div>`;
   });
@@ -828,25 +795,50 @@ function renderSecretsTable() {
 }
 
 // ══════════════════════════════════════════════
-// ICS EXPORT
+// GROUP CALENDAR EXPORT
 // ══════════════════════════════════════════════
-function exportICS(gid, dateStr, type, label) {
-  const g = GROUPS.find(x=>x.id===gid);
-  const d = new Date(dateStr);
-  const pad = n=>String(n).padStart(2,'0');
-  const icsDate = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
-  const title = type==='trash' ? `🗑️ Trash duty (${label}) — ${g.name}` : `🍽️ Dishwasher duty — ${g.name}`;
-  const desc = type==='trash'
-    ? `Put trash outside before 7:00 AM. Members: ${names(g)}`
-    : `Empty dishwasher before 10:00 AM. Members: ${names(g)}`;
+function openGroupPicker() {
+  const pad = n => String(n).padStart(2,'0');
+  const hdrColors = {G1:'#2a2200',G2:'#0a1e3a',G3:'#1e0a2e',G4:'#2e0a0a',G5:'#0a1e0a'};
+  document.getElementById('group-picker-cards').innerHTML = GROUPS.map(g => `
+    <div onclick="exportGroupICS('${g.id}')" style="cursor:pointer;border-radius:9px;overflow:hidden;border:1px solid var(--cream-dark);transition:box-shadow .2s;" onmouseover="this.style.boxShadow='0 4px 14px var(--shadow)'" onmouseout="this.style.boxShadow='none'">
+      <div style="background:${hdrColors[g.id]};padding:10px 14px;font-family:'Playfair Display',serif;font-size:14px;color:#fff;">${g.name}</div>
+      <div style="padding:10px 14px;font-size:12px;color:var(--text-light);line-height:1.6;">${g.members.map(m=>m.name).join('<br>')}</div>
+    </div>`).join('');
+  document.getElementById('group-picker-overlay').classList.add('open');
+}
 
-  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JB4//Dashboard//EN\r\nBEGIN:VEVENT\r\nUID:${gid}-${dateStr}-${type}@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:${title}\r\nDESCRIPTION:${desc}\r\nLOCATION:Jardin Botanique 4, Brussels\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+function closeGroupPicker() {
+  document.getElementById('group-picker-overlay').classList.remove('open');
+}
 
+function exportGroupICS(gid) {
+  closeGroupPicker();
+  const g = GROUPS.find(x => x.id === gid);
+  const pad = n => String(n).padStart(2,'0');
+  let events = '';
+
+  TRASH_SCHEDULE.forEach(t => {
+    const wi = weekIdx(new Date(t.date));
+    const tg = trashGroupForWeek(wi);
+    const dg = dishGroupForWeek(wi);
+    const d = new Date(t.date);
+    const icsDate = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+
+    if (tg.id === gid) {
+      events += `BEGIN:VEVENT\r\nUID:${gid}-${t.date}-trash@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:🗑️ Trash duty — ${g.name}\r\nDESCRIPTION:${t.label}. Put bags outside the evening before (Mon/Thu) or by 9am (Fri). Members: ${names(g)}\r\nLOCATION:Jardin Botanique 4\\, Brussels\r\nEND:VEVENT\r\n`;
+    }
+    if (dg.id === gid) {
+      events += `BEGIN:VEVENT\r\nUID:${gid}-${t.date}-dishes@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:🍽️ Dishwasher duty — ${g.name}\r\nDESCRIPTION:Empty dishwasher before 10:00 AM each morning this week. Members: ${names(g)}\r\nLOCATION:Jardin Botanique 4\\, Brussels\r\nEND:VEVENT\r\n`;
+    }
+  });
+
+  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JB4//Dashboard//EN\r\nX-WR-CALNAME:JB4 Duties — ${g.name}\r\nX-WR-TIMEZONE:Europe/Brussels\r\n${events}END:VCALENDAR`;
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
-  a.download = `jb4-${gid}-${dateStr}-${type}.ics`;
+  a.href = URL.createObjectURL(new Blob([ics], {type:'text/calendar'}));
+  a.download = `jb4-duties-${gid.toLowerCase()}.ics`;
   a.click();
-  showToast('Calendar file downloaded (.ics) 📅');
+  showToast(`Full calendar downloaded for ${g.name} 📅`);
 }
 
 // ══════════════════════════════════════════════
@@ -915,7 +907,6 @@ function showToast(msg) {
 renderTicker();
 renderThisWeek();
 renderRules();
-renderPoll();
 renderCalendar();
 renderGroups();
 renderSecretsTable();

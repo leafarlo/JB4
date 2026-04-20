@@ -11,11 +11,11 @@
       "name": "Group 1",
       "color": "yellow",
       "members": [
-        { "room": "101", "name": "Alex",     "emailSecret": "EMAIL_G1_M1" },
-        { "room": "102", "name": "Gianluca", "emailSecret": "EMAIL_G1_M2" },
-        { "room": "103", "name": "Stevan",   "emailSecret": "EMAIL_G1_M3" },
-        { "room": "104", "name": "Anna",     "emailSecret": "EMAIL_G1_M4" },
-        { "room": "105", "name": "Rafael",   "emailSecret": "EMAIL_G1_M5" }
+        { "room": "101", "name": "Name 1",  "emailSecret": "EMAIL_G1_M1" },
+        { "room": "102", "name": "Name 2",  "emailSecret": "EMAIL_G1_M2" },
+        { "room": "103", "name": "Name 3",  "emailSecret": "EMAIL_G1_M3" },
+        { "room": "104", "name": "Name 4",  "emailSecret": "EMAIL_G1_M4" },
+        { "room": "105", "name": "Rafael",  "emailSecret": "EMAIL_G1_M5" }
       ]
     },
     {
@@ -23,11 +23,11 @@
       "name": "Group 2",
       "color": "blue",
       "members": [
-        { "room": "201", "name": "Claudia",  "emailSecret": "EMAIL_G2_M1" },
-        { "room": "202", "name": "Aurelien", "emailSecret": "EMAIL_G2_M2" },
-        { "room": "203", "name": "Eduard",   "emailSecret": "EMAIL_G2_M3" },
-        { "room": "204", "name": "Antonio",  "emailSecret": "EMAIL_G2_M4" },
-        { "room": "205", "name": "Victoria", "emailSecret": "EMAIL_G2_M5" }
+        { "room": "201", "name": "Name 5",  "emailSecret": "EMAIL_G2_M1" },
+        { "room": "202", "name": "Name 6",  "emailSecret": "EMAIL_G2_M2" },
+        { "room": "203", "name": "Name 7",  "emailSecret": "EMAIL_G2_M3" },
+        { "room": "204", "name": "Name 8",  "emailSecret": "EMAIL_G2_M4" },
+        { "room": "205", "name": "Name 9",  "emailSecret": "EMAIL_G2_M5" }
       ]
     },
     {
@@ -35,11 +35,11 @@
       "name": "Group 3",
       "color": "purple",
       "members": [
-        { "room": "301", "name": "Maria",    "emailSecret": "EMAIL_G3_M1" },
-        { "room": "302", "name": "Larissa",  "emailSecret": "EMAIL_G3_M2" },
-        { "room": "303", "name": "Ayman",    "emailSecret": "EMAIL_G3_M3" },
-        { "room": "304", "name": "Almudena", "emailSecret": "EMAIL_G3_M4" },
-        { "room": "305", "name": "Samy",     "emailSecret": "EMAIL_G3_M5" }
+        { "room": "301", "name": "Name 10", "emailSecret": "EMAIL_G3_M1" },
+        { "room": "302", "name": "Name 11", "emailSecret": "EMAIL_G3_M2" },
+        { "room": "303", "name": "Name 12", "emailSecret": "EMAIL_G3_M3" },
+        { "room": "304", "name": "Name 13", "emailSecret": "EMAIL_G3_M4" },
+        { "room": "305", "name": "Name 14", "emailSecret": "EMAIL_G3_M5" }
       ]
     },
     {
@@ -47,10 +47,10 @@
       "name": "Group 4",
       "color": "red",
       "members": [
-        { "room": "401", "name": "Maxine",   "emailSecret": "EMAIL_G4_M1" },
-        { "room": "402", "name": "Tadeusz",  "emailSecret": "EMAIL_G4_M2" },
-        { "room": "403", "name": "Adithi",   "emailSecret": "EMAIL_G4_M3" },
-        { "room": "404", "name": "Gergo",    "emailSecret": "EMAIL_G4_M4" }
+        { "room": "401", "name": "Name 15", "emailSecret": "EMAIL_G4_M1" },
+        { "room": "402", "name": "Name 16", "emailSecret": "EMAIL_G4_M2" },
+        { "room": "403", "name": "Name 17", "emailSecret": "EMAIL_G4_M3" },
+        { "room": "404", "name": "Name 18", "emailSecret": "EMAIL_G4_M4" }
       ]
     },
     {
@@ -58,10 +58,10 @@
       "name": "Group 5",
       "color": "green",
       "members": [
-        { "room": "501", "name": "Franco",   "emailSecret": "EMAIL_G5_M1" },
-        { "room": "502", "name": "Erwann",   "emailSecret": "EMAIL_G5_M2" },
-        { "room": "503", "name": "Aysegul",  "emailSecret": "EMAIL_G5_M3" },
-        { "room": "504", "name": "???",       "emailSecret": "EMAIL_G5_M4" }
+        { "room": "501", "name": "Name 19", "emailSecret": "EMAIL_G5_M1" },
+        { "room": "502", "name": "Name 20", "emailSecret": "EMAIL_G5_M2" },
+        { "room": "503", "name": "Name 21", "emailSecret": "EMAIL_G5_M3" },
+        { "room": "504", "name": "Name 22", "emailSecret": "EMAIL_G5_M4" }
       ]
     }
   ],
