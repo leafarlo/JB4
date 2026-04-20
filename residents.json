@@ -11,10 +11,10 @@
       "name": "Group 1",
       "color": "yellow",
       "members": [
-        { "room": "101", "name": "Name 1",  "emailSecret": "EMAIL_G1_M1" },
-        { "room": "102", "name": "Name 2",  "emailSecret": "EMAIL_G1_M2" },
-        { "room": "103", "name": "Name 3",  "emailSecret": "EMAIL_G1_M3" },
-        { "room": "104", "name": "Name 4",  "emailSecret": "EMAIL_G1_M4" },
+        { "room": "101", "name": "Alex",     "emailSecret": "EMAIL_G1_M1" },
+        { "room": "102", "name": "Anna",     "emailSecret": "EMAIL_G1_M2" },
+        { "room": "103", "name": "Gianluca", "emailSecret": "EMAIL_G1_M3" },
+        { "room": "104", "name": "Stevan",   "emailSecret": "EMAIL_G1_M4" },
         { "room": "105", "name": "Rafael",  "emailSecret": "EMAIL_G1_M5" }
       ]
     },
