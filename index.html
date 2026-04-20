@@ -148,9 +148,6 @@
   .room-row:last-child { border-bottom:none; }
   .room-lbl { font-size:11px; color:var(--text-light); font-family:'DM Mono',monospace; }
   .res-name { font-size:13px; font-weight:500; cursor:pointer; padding:2px 6px; border-radius:4px; border:1px dashed transparent; transition:all .2s; }
-  .res-name:hover { border-color:var(--green-muted); background:var(--green-pale); }
-  .res-name:focus { outline:none; border-color:var(--green-light); background:#fff; border-style:solid; }
-  .edit-hint { font-size:12px; color:var(--text-light); margin-bottom:18px; padding:9px 13px; background:rgba(196,151,58,.07); border-radius:7px; border:1px solid rgba(196,151,58,.18); }
   .rem-btns { display:flex; flex-wrap:wrap; gap:8px; }
   .rem-btn { padding:8px 15px; background:rgba(74,124,47,.1); border:1px solid rgba(74,124,47,.3); border-radius:6px; font-size:13px; color:var(--green-light); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; }
   .rem-btn:hover { background:rgba(74,124,47,.2); }
@@ -287,8 +284,7 @@
 <!-- ══════════ RESIDENTS ══════════ -->
 <div class="tab-panel" id="tab-residents">
   <div class="section-title">Residents & Groups</div>
-  <div class="section-sub">Click any name to edit it — updates everywhere instantly</div>
-  <div class="edit-hint">✏️ <strong>Click a name</strong> to rename. Press Enter or click away to save. Room numbers are fixed; only names change.</div>
+  <div class="section-sub">All residents and their group assignments</div>
   <div class="groups-grid" id="groups-grid"></div>
 
   <div class="section-title" style="font-size:20px;margin-bottom:4px;">Send Reminder</div>
@@ -469,33 +465,33 @@ const GROUPS = [
     ]},
   { id:'G2', name:'Group 2', color:'g2b', hdr:'gh-g2',
     members:[
-      {room:'201', name:'Name 5'},
-      {room:'202', name:'Name 6'},
-      {room:'203', name:'Name 7'},
-      {room:'204', name:'Name 8'},
-      {room:'205', name:'Name 9'},
+      {room:'201', name:'Claudia'},
+      {room:'202', name:'Paul'},
+      {room:'203', name:'Eduard'},
+      {room:'204', name:'Carl'},
+      {room:'205', name:'Victoria'},
     ]},
   { id:'G3', name:'Group 3', color:'g3b', hdr:'gh-g3',
     members:[
-      {room:'301', name:'Name 10'},
-      {room:'302', name:'Name 11'},
-      {room:'303', name:'Name 12'},
-      {room:'304', name:'Name 13'},
-      {room:'305', name:'Name 14'},
+      {room:'301', name:'Maria'},
+      {room:'302', name:'Adrian'},
+      {room:'303', name:'Ayman'},
+      {room:'304', name:'Daniel'},
+      {room:'305', name:'Samy'},
     ]},
   { id:'G4', name:'Group 4', color:'g4b', hdr:'gh-g4',
     members:[
-      {room:'401', name:'Name 15'},
-      {room:'402', name:'Name 16'},
-      {room:'403', name:'Name 17'},
-      {room:'404', name:'Name 18'},
+      {room:'401', name:'Andreu'},
+      {room:'402', name:'Sergio'},
+      {room:'403', name:'Adithi'},
+      {room:'404', name:'Gergo'},
     ]},
   { id:'G5', name:'Group 5', color:'g5b', hdr:'gh-g5',
     members:[
-      {room:'501', name:'Name 19'},
-      {room:'502', name:'Name 20'},
-      {room:'503', name:'Name 21'},
-      {room:'504', name:'Name 22'},
+      {room:'501', name:'Ivan'},
+      {room:'502', name:'Erwann'},
+      {room:'503', name:'Aysegul'},
+      {room:'504', name:'Franco'},
     ]},
 ];
 
@@ -882,12 +878,7 @@ function renderGroups() {
       ${g.members.map((m,mi)=>`
         <div class="room-row">
           <span class="room-lbl">${m.room}</span>
-          <span class="res-name" contenteditable="false"
-            data-gi="${gi}" data-mi="${mi}"
-            onclick="startEdit(this)"
-            onblur="saveEdit(this)"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
-          >${m.name}</span>
+          <span class="res-name">${m.name}</span>
         </div>`).join('')}
     </div>`).join('');
 
@@ -895,25 +886,6 @@ function renderGroups() {
     <button class="rem-btn" onclick="openGroupReminder('${g.id}')">💬 ${g.name}</button>`).join('');
 }
 
-function startEdit(el) {
-  el.contentEditable = 'true';
-  el.focus();
-  const r = document.createRange();
-  r.selectNodeContents(el);
-  window.getSelection().removeAllRanges();
-  window.getSelection().addRange(r);
-}
-
-function saveEdit(el) {
-  el.contentEditable = 'false';
-  const gi = +el.dataset.gi, mi = +el.dataset.mi;
-  GROUPS[gi].members[mi].name = el.textContent.trim();
-  renderCalendar();
-  renderTicker();
-  renderThisWeek();
-  renderSecretsTable();
-  showToast(`Saved: ${el.textContent.trim()} ✓`);
-}
 
 // ══════════════════════════════════════════════
 // RENDER: SECRETS TABLE
