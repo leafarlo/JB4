@@ -24,9 +24,9 @@
       "color": "blue",
       "members": [
         { "room": "201", "name": "Claudia",  "emailSecret": "EMAIL_G2_M1" },
-        { "room": "202", "name": "Paul",     "emailSecret": "EMAIL_G2_M2" },
+        { "room": "202", "name": "Almudena", "emailSecret": "EMAIL_G2_M2" },
         { "room": "203", "name": "Eduard",   "emailSecret": "EMAIL_G2_M3" },
-        { "room": "204", "name": "Carl",     "emailSecret": "EMAIL_G2_M4" },
+        { "room": "204", "name": "Maxime",   "emailSecret": "EMAIL_G2_M4" },
         { "room": "205", "name": "Victoria", "emailSecret": "EMAIL_G2_M5" }
       ]
     },
@@ -35,10 +35,10 @@
       "name": "Group 3",
       "color": "purple",
       "members": [
-        { "room": "301", "name": "Maria",   "emailSecret": "EMAIL_G3_M1" },
-        { "room": "302", "name": "Adrian",  "emailSecret": "EMAIL_G3_M2" },
+        { "room": "301", "name": "Tadeusz",  "emailSecret": "EMAIL_G3_M1" },
+        { "room": "302", "name": "Antonio", "emailSecret": "EMAIL_G3_M2" },
         { "room": "303", "name": "Ayman",   "emailSecret": "EMAIL_G3_M3" },
-        { "room": "304", "name": "Daniel",  "emailSecret": "EMAIL_G3_M4" },
+        { "room": "304", "name": "Aurelien","emailSecret": "EMAIL_G3_M4" },
         { "room": "305", "name": "Samy",    "emailSecret": "EMAIL_G3_M5" }
       ]
     },
@@ -47,8 +47,8 @@
       "name": "Group 4",
       "color": "red",
       "members": [
-        { "room": "401", "name": "Andreu", "emailSecret": "EMAIL_G4_M1" },
-        { "room": "402", "name": "Sergio", "emailSecret": "EMAIL_G4_M2" },
+        { "room": "401", "name": "Larissa", "emailSecret": "EMAIL_G4_M1" },
+        { "room": "402", "name": "Jose",    "emailSecret": "EMAIL_G4_M2" },
         { "room": "403", "name": "Adithi", "emailSecret": "EMAIL_G4_M3" },
         { "room": "404", "name": "Gergo",  "emailSecret": "EMAIL_G4_M4" }
       ]
@@ -58,7 +58,7 @@
       "name": "Group 5",
       "color": "green",
       "members": [
-        { "room": "501", "name": "Ivan",    "emailSecret": "EMAIL_G5_M1" },
+        { "room": "501", "name": "Caterina", "emailSecret": "EMAIL_G5_M1" },
         { "room": "502", "name": "Erwann",  "emailSecret": "EMAIL_G5_M2" },
         { "room": "503", "name": "Aysegul", "emailSecret": "EMAIL_G5_M3" },
         { "room": "504", "name": "Franco",  "emailSecret": "EMAIL_G5_M4" }
