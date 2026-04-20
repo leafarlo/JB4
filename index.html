@@ -428,10 +428,26 @@
 <div class="modal-overlay" id="group-picker-overlay" onclick="if(event.target===this)closeGroupPicker()">
   <div class="modal" style="max-width:540px;">
     <h3>Choose your group</h3>
-    <p>📅 <strong>Add</strong> downloads all your duties as a .ics file. 🗑️ <strong>Remove</strong> downloads a cancel file — import it to delete all events at once.</p>
+    <p>Download your duties as a .ics calendar file. <strong>Tip:</strong> when importing, put the events in a calendar named <em>"JB4 Duties"</em> — then to remove all events at once, just delete that calendar in your app.</p>
     <div id="group-picker-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;"></div>
     <div class="modal-btns" style="margin-top:16px;">
       <button class="btn-close" onclick="closeGroupPicker()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="remove-help-overlay" onclick="if(event.target===this)document.getElementById('remove-help-overlay').classList.remove('open')">
+  <div class="modal" style="max-width:460px;">
+    <h3>Remove calendar events</h3>
+    <p style="margin-bottom:12px;">To delete all <strong id="remove-help-name"></strong> events at once:</p>
+    <ol style="padding-left:20px;font-size:14px;line-height:2;color:var(--text-mid);">
+      <li>Open your calendar app (Google Calendar, Apple Calendar, Outlook…)</li>
+      <li>Find the calendar named <strong>"JB4 Duties"</strong></li>
+      <li>Delete / unsubscribe from that calendar — all events disappear instantly</li>
+    </ol>
+    <p style="margin-top:12px;font-size:12px;color:var(--text-light);">If you imported into your main calendar instead, you'll need to delete the events one by one — or re-import with the file below (works in Outlook).</p>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-close" onclick="document.getElementById('remove-help-overlay').classList.remove('open')">Close</button>
     </div>
   </div>
 </div>
@@ -926,7 +942,7 @@ function openGroupPicker() {
       <div style="padding:8px 14px 4px;font-size:12px;color:var(--text-light);line-height:1.6;">${g.members.map(m=>m.name).join('<br>')}</div>
       <div style="padding:8px 14px 12px;display:flex;gap:8px;">
         <button onclick="exportGroupICS('${g.id}',false)" style="flex:1;padding:7px 0;background:var(--gold);color:var(--green-deep);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">📅 Add</button>
-        <button onclick="exportGroupICS('${g.id}',true)" style="flex:1;padding:7px 0;background:var(--warm-white);color:#c0392b;border:1px solid #c0392b;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">🗑️ Remove</button>
+        <button onclick="showRemoveHelp('${g.id}')" style="flex:1;padding:7px 0;background:var(--warm-white);color:#c0392b;border:1px solid #c0392b;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">🗑️ Remove</button>
       </div>
     </div>`).join('');
   document.getElementById('group-picker-overlay').classList.add('open');
@@ -934,6 +950,13 @@ function openGroupPicker() {
 
 function closeGroupPicker() {
   document.getElementById('group-picker-overlay').classList.remove('open');
+}
+
+function showRemoveHelp(gid) {
+  closeGroupPicker();
+  const g = GROUPS.find(x => x.id === gid);
+  document.getElementById('remove-help-name').textContent = g.name;
+  document.getElementById('remove-help-overlay').classList.add('open');
 }
 
 function exportGroupICS(gid, cancel) {
