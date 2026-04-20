@@ -1,0 +1,16 @@
+{
+  "name": "jb4-reminders",
+  "version": "1.0.0",
+  "description": "Weekly duty reminders for Jardin Botanique 4",
+  "main": "send-reminders.js",
+  "scripts": {
+    "send": "node send-reminders.js",
+    "test-dry": "DRY_RUN=true node send-reminders.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.9"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

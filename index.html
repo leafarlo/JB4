@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jardin Botanique 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a2e1a;
+    --green-mid: #2d5016;
+    --green-light: #4a7c2f;
+    --green-muted: #8fb573;
+    --green-pale: #d4e8c2;
+    --cream: #f5f0e8;
+    --cream-dark: #ede6d6;
+    --warm-white: #faf8f3;
+    --gold: #c4973a;
+    --gold-light: #e8c87a;
+    --text-dark: #1a1a14;
+    --text-mid: #4a4a3a;
+    --text-light: #7a7a6a;
+    --shadow: rgba(26,46,26,0.13);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text-dark); min-height:100vh; overflow-x:hidden; }
+
+  /* TICKER */
+  .ticker-wrap { background:var(--green-deep); overflow:hidden; height:38px; display:flex; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
+  .ticker-label { background:var(--gold); color:var(--green-deep); font-family:'DM Mono',monospace; font-size:11px; font-weight:500; padding:0 14px; height:100%; display:flex; align-items:center; white-space:nowrap; letter-spacing:.08em; text-transform:uppercase; flex-shrink:0; }
+  .ticker-track { display:flex; animation:ticker 36s linear infinite; white-space:nowrap; }
+  .ticker-track span { padding:0 36px; font-size:13px; color:var(--green-pale); font-weight:300; }
+  .ticker-track .sep { color:var(--gold); opacity:.5; padding:0 4px; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+  /* HEADER */
+  .site-header { background:var(--green-deep); padding:28px 40px 0; position:relative; overflow:hidden; }
+  .site-header::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; background:radial-gradient(circle,rgba(74,124,47,.25) 0%,transparent 70%); pointer-events:none; }
+  .site-header::after { content:'JB4'; position:absolute; right:36px; bottom:8px; font-family:'Playfair Display',serif; font-size:110px; color:rgba(255,255,255,.04); line-height:1; pointer-events:none; }
+  .house-eyebrow { font-size:12px; color:var(--green-muted); letter-spacing:.18em; text-transform:uppercase; margin-bottom:5px; }
+  .house-title { font-family:'Playfair Display',serif; font-size:clamp(26px,5vw,44px); color:var(--cream); line-height:1.1; }
+  .house-title em { color:var(--gold-light); font-style:italic; }
+  .house-meta { font-size:13px; color:var(--green-muted); margin-top:7px; font-weight:300; }
+  .nav { display:flex; margin-top:24px; }
+  .nav-btn { background:none; border:none; color:var(--green-muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; padding:12px 22px; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+  .nav-btn:hover { color:var(--cream); }
+  .nav-btn.active { color:var(--gold-light); border-bottom-color:var(--gold); }
+
+  /* CONTENT */
+  .content { max-width:1100px; margin:0 auto; padding:40px 24px 80px; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  .section-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--green-deep); margin-bottom:4px; }
+  .section-sub { font-size:13px; color:var(--text-light); margin-bottom:28px; font-weight:300; }
+
+  /* CARDS */
+  .card { background:var(--warm-white); border-radius:12px; padding:26px; border:1px solid rgba(74,124,47,.13); box-shadow:0 2px 10px var(--shadow); }
+  .card-title { font-family:'Playfair Display',serif; font-size:17px; color:var(--green-deep); margin-bottom:14px; display:flex; align-items:center; gap:9px; }
+  .card-icon { width:30px; height:30px; background:var(--green-pale); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:15px; }
+
+  /* HOME GRID */
+  .home-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:700px){.home-grid{grid-template-columns:1fr;}}
+
+  /* THIS WEEK */
+  .week-card { background:var(--green-deep); }
+  .week-card .card-title { color:var(--gold-light); }
+  .week-card .card-icon { background:rgba(196,151,58,.2); }
+  .duty-row { display:flex; justify-content:space-between; align-items:flex-start; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08); }
+  .duty-row:last-child { border-bottom:none; }
+  .duty-label { font-size:13px; color:var(--green-muted); }
+  .duty-names { font-size:12px; color:var(--gold-light); margin-top:3px; line-height:1.5; }
+  .duty-right { text-align:right; }
+
+  /* GROUP BADGES */
+  .gbadge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-family:'DM Mono',monospace; font-weight:500; }
+  .g1b { background:rgba(180,160,0,.25); color:#d4c030; }
+  .g2b { background:rgba(30,100,200,.25); color:#60a8f0; }
+  .g3b { background:rgba(150,50,180,.25); color:#c080e8; }
+  .g4b { background:rgba(200,40,40,.25); color:#f08080; }
+  .g5b { background:rgba(50,160,50,.25); color:#80d080; }
+
+  /* RULES */
+  .rule-item { display:flex; gap:12px; padding:11px 0; border-bottom:1px solid var(--cream-dark); align-items:flex-start; }
+  .rule-item:last-child { border-bottom:none; }
+  .rule-num { font-family:'DM Mono',monospace; font-size:11px; color:var(--gold); background:rgba(196,151,58,.1); border:1px solid rgba(196,151,58,.25); padding:2px 6px; border-radius:4px; flex-shrink:0; margin-top:2px; }
+  .rule-text { font-size:13px; line-height:1.5; color:var(--text-mid); }
+  .rule-text strong { color:var(--text-dark); }
+
+  /* POLL */
+  .poll-opt { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:7px; border:1px solid var(--cream-dark); margin-bottom:7px; cursor:pointer; transition:all .2s; }
+  .poll-opt:hover { border-color:var(--green-muted); background:var(--green-pale); }
+  .poll-bar-wrap { flex:1; }
+  .poll-bar-label { font-size:13px; margin-bottom:3px; }
+  .poll-bar-track { height:5px; background:var(--cream-dark); border-radius:3px; overflow:hidden; }
+  .poll-bar-fill { height:100%; background:var(--green-light); border-radius:3px; transition:width .5s; }
+  .poll-pct { font-family:'DM Mono',monospace; font-size:11px; color:var(--text-light); width:32px; text-align:right; }
+
+  /* CALENDAR */
+  .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px; align-items:center; }
+  .fbtn { padding:6px 14px; border-radius:20px; border:1px solid var(--cream-dark); background:var(--warm-white); font-family:'DM Sans',sans-serif; font-size:12px; cursor:pointer; transition:all .2s; color:var(--text-mid); }
+  .fbtn:hover { border-color:var(--green-muted); }
+  .fbtn.active { background:var(--green-deep); color:var(--cream); border-color:var(--green-deep); }
+  .cal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:14px; }
+  .cal-card { background:var(--warm-white); border-radius:10px; border:1px solid rgba(74,124,47,.13); overflow:hidden; transition:transform .2s,box-shadow .2s; }
+  .cal-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px var(--shadow); }
+  .cal-card.hidden { display:none; }
+  .cal-head { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+  .cal-date-str { font-size:12px; color:rgba(255,255,255,.7); }
+  .cal-type-label { font-size:11px; font-family:'DM Mono',monospace; letter-spacing:.05em; text-transform:uppercase; }
+  .trash-lbl { color:#e8c87a; }
+  .dish-lbl { color:#7ab8e8; }
+  .cal-body { padding:14px 16px; }
+  .cal-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+  .bag-tag { font-size:11px; padding:2px 8px; border-radius:4px; }
+  .blue-t  { background:rgba(42,107,200,.15); color:#60a0d8; border:1px solid rgba(42,107,200,.25); }
+  .yellow-t{ background:rgba(200,180,0,.15);  color:#c0a830; border:1px solid rgba(200,180,0,.25); }
+  .green-t { background:rgba(50,150,50,.2);   color:#50b850; border:1px solid rgba(50,150,50,.3); }
+  .glass-t { background:rgba(100,180,210,.15);color:#60b0d0; border:1px solid rgba(100,180,210,.3); }
+  .chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+  .chip { background:var(--cream-dark); border-radius:20px; padding:3px 9px; font-size:12px; color:var(--text-mid); }
+  .cal-actions { display:flex; gap:7px; flex-wrap:wrap; }
+  .act-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:5px; font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; transition:all .2s; }
+  .ics-btn { background:rgba(196,151,58,.1); border:1px solid rgba(196,151,58,.3); color:var(--gold); }
+  .ics-btn:hover { background:rgba(196,151,58,.2); }
+  .msg-btn { background:rgba(74,124,47,.1); border:1px solid rgba(74,124,47,.3); color:var(--green-light); }
+  .msg-btn:hover { background:rgba(74,124,47,.2); }
+
+  /* RESIDENTS */
+  .groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(195px,1fr)); gap:14px; margin-bottom:30px; }
+  .grp-card { background:var(--warm-white); border-radius:10px; border:1px solid rgba(74,124,47,.13); overflow:hidden; }
+  .grp-head { padding:11px 14px; display:flex; justify-content:space-between; align-items:center; }
+  .grp-title { font-family:'Playfair Display',serif; font-size:15px; color:#fff; }
+  .gh-g1 { background:#2a2200; } .gh-g2 { background:#0a1e3a; } .gh-g3 { background:#1e0a2e; }
+  .gh-g4 { background:#2e0a0a; } .gh-g5 { background:#0a1e0a; }
+  .room-row { display:flex; justify-content:space-between; align-items:center; padding:7px 14px; border-bottom:1px solid var(--cream-dark); }
+  .room-row:last-child { border-bottom:none; }
+  .room-lbl { font-size:11px; color:var(--text-light); font-family:'DM Mono',monospace; }
+  .res-name { font-size:13px; font-weight:500; cursor:pointer; padding:2px 6px; border-radius:4px; border:1px dashed transparent; transition:all .2s; }
+  .res-name:hover { border-color:var(--green-muted); background:var(--green-pale); }
+  .res-name:focus { outline:none; border-color:var(--green-light); background:#fff; border-style:solid; }
+  .edit-hint { font-size:12px; color:var(--text-light); margin-bottom:18px; padding:9px 13px; background:rgba(196,151,58,.07); border-radius:7px; border:1px solid rgba(196,151,58,.18); }
+  .rem-btns { display:flex; flex-wrap:wrap; gap:8px; }
+  .rem-btn { padding:8px 15px; background:rgba(74,124,47,.1); border:1px solid rgba(74,124,47,.3); border-radius:6px; font-size:13px; color:var(--green-light); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; }
+  .rem-btn:hover { background:rgba(74,124,47,.2); }
+
+  /* NEWCOMER */
+  .nc-hero { background:var(--green-deep); border-radius:14px; padding:36px; margin-bottom:24px; position:relative; overflow:hidden; }
+  .nc-hero::after { content:'🌿'; position:absolute; right:28px; top:18px; font-size:72px; opacity:.12; }
+  .nc-hero h2 { font-family:'Playfair Display',serif; font-size:24px; color:var(--cream); margin-bottom:8px; }
+  .nc-hero p { color:var(--green-muted); font-size:13px; line-height:1.6; max-width:480px; font-weight:300; }
+  .info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; margin-bottom:20px; }
+  .info-card { background:var(--warm-white); border-radius:10px; padding:20px; border:1px solid rgba(74,124,47,.13); }
+  .info-card h3 { font-family:'Playfair Display',serif; font-size:15px; color:var(--green-deep); margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+  .info-list { list-style:none; }
+  .info-list li { font-size:13px; color:var(--text-mid); padding:4px 0; display:flex; gap:7px; border-bottom:1px solid var(--cream-dark); line-height:1.4; }
+  .info-list li:last-child { border-bottom:none; }
+  .info-list li::before { content:'—'; color:var(--green-muted); flex-shrink:0; }
+  .supply-tag { display:inline-block; background:rgba(74,124,47,.1); border:1px solid rgba(74,124,47,.25); color:var(--green-light); font-size:10px; padding:1px 6px; border-radius:8px; margin-left:4px; }
+  .pdf-zone { border:2px dashed rgba(74,124,47,.28); border-radius:11px; padding:36px; text-align:center; background:rgba(74,124,47,.025); margin-top:20px; cursor:pointer; transition:all .2s; }
+  .pdf-zone:hover { border-color:var(--green-light); background:rgba(74,124,47,.05); }
+  .pdf-zone h3 { font-family:'Playfair Display',serif; font-size:17px; color:var(--green-deep); margin-bottom:7px; }
+  .pdf-zone p { font-size:13px; color:var(--text-light); margin-bottom:14px; }
+  .pdf-up-btn { background:var(--green-deep); color:var(--cream); border:none; padding:9px 20px; border-radius:6px; font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; }
+  #pdf-viewer { width:100%; height:580px; border-radius:8px; border:1px solid var(--cream-dark); margin-top:14px; display:none; }
+
+  /* MODAL */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(26,46,26,.55); z-index:200; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--warm-white); border-radius:13px; padding:30px; max-width:420px; width:90%; box-shadow:0 18px 50px rgba(0,0,0,.25); }
+  .modal h3 { font-family:'Playfair Display',serif; font-size:19px; color:var(--green-deep); margin-bottom:6px; }
+  .modal p { font-size:13px; color:var(--text-light); margin-bottom:14px; }
+  .modal textarea { width:100%; padding:11px; border:1px solid var(--cream-dark); border-radius:7px; font-family:'DM Mono',monospace; font-size:12px; color:var(--text-dark); background:var(--cream); resize:none; height:130px; margin-bottom:12px; }
+  .modal-btns { display:flex; gap:8px; justify-content:flex-end; }
+  .btn-copy { background:var(--green-deep); color:var(--cream); border:none; padding:8px 16px; border-radius:5px; font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; }
+  .btn-close { background:var(--cream-dark); color:var(--text-mid); border:none; padding:8px 16px; border-radius:5px; font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; }
+  .toast { position:fixed; bottom:26px; right:26px; background:var(--green-deep); color:var(--cream); padding:11px 18px; border-radius:7px; font-size:13px; opacity:0; transform:translateY(8px); transition:all .3s; z-index:300; pointer-events:none; border-left:3px solid var(--gold); }
+  .toast.show { opacity:1; transform:translateY(0); }
+
+  /* SECRETS GUIDE */
+  .secrets-table { width:100%; border-collapse:collapse; font-size:12px; margin-top:14px; }
+  .secrets-table th { background:var(--green-deep); color:var(--green-pale); padding:8px 12px; text-align:left; font-weight:500; }
+  .secrets-table td { padding:7px 12px; border-bottom:1px solid var(--cream-dark); font-family:'DM Mono',monospace; color:var(--text-mid); }
+  .secrets-table tr:last-child td { border-bottom:none; }
+  .name-col { color:var(--text-dark); font-family:'DM Sans',sans-serif; font-weight:500; }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-label">🏡 This week</div>
+  <div style="overflow:hidden;flex:1;display:flex;align-items:center;">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="site-header">
+  <div class="house-eyebrow">Brussels · Ixelles</div>
+  <div class="house-title">Jardin <em>Botanique</em> 4</div>
+  <div class="house-meta">23 residents · 5 groups · Community dashboard</div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showTab('home',this)">Home</button>
+    <button class="nav-btn" onclick="showTab('calendar',this)">Calendar</button>
+    <button class="nav-btn" onclick="showTab('residents',this)">Residents</button>
+    <button class="nav-btn" onclick="showTab('newcomer',this)">Newcomer Guide</button>
+    <button class="nav-btn" onclick="showTab('secrets',this)">⚙️ Email Setup</button>
+  </nav>
+</div>
+
+<div class="content">
+
+<!-- ══════════ HOME ══════════ -->
+<div class="tab-panel active" id="tab-home">
+  <div class="home-grid">
+
+    <div class="card week-card">
+      <div class="card-title"><div class="card-icon">📅</div>This Week's Duties</div>
+      <div id="this-week"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">📋</div>House Rules</div>
+      <div id="rules"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🗳️</div>Community Poll</div>
+      <div style="font-size:14px;color:var(--text-mid);margin-bottom:12px;font-weight:500;">How was the house cleanliness this week?</div>
+      <div id="poll"></div>
+      <div style="font-size:12px;color:var(--text-light);margin-top:6px;" id="poll-status">Click to vote</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-icon">🗑️</div>Commune Collection Days</div>
+      <div style="font-size:13px;color:var(--text-mid);line-height:1.9;">
+        🔵 <strong>Monday</strong> — Blue bags (PMC / plastics)<br>
+        🟡 <strong>Wednesday</strong> — Yellow bags (Paper & cardboard)<br>
+        🟢 <strong>Friday</strong> — Green bags (Organic)<br>
+        ⬜ <strong>1st Saturday</strong> — Glass containers
+      </div>
+      <div style="margin-top:12px;padding:9px 12px;background:rgba(196,151,58,.08);border-radius:7px;border:1px solid rgba(196,151,58,.2);font-size:12px;color:#8a6020;">
+        ⏰ Bags must be outside <strong>before 7:00 AM</strong> on collection morning.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ CALENDAR ══════════ -->
+<div class="tab-panel" id="tab-calendar">
+  <div class="section-title">Planning Calendar</div>
+  <div class="section-sub">Trash collection & dishwasher duties · Feb – Jun 2025</div>
+
+  <div class="filter-row">
+    <span style="font-size:12px;color:var(--text-light);">Filter:</span>
+    <button class="fbtn active" onclick="filterCal('all',this)">All</button>
+    <button class="fbtn" onclick="filterCal('G1',this)">Group 1</button>
+    <button class="fbtn" onclick="filterCal('G2',this)">Group 2</button>
+    <button class="fbtn" onclick="filterCal('G3',this)">Group 3</button>
+    <button class="fbtn" onclick="filterCal('G4',this)">Group 4</button>
+    <button class="fbtn" onclick="filterCal('G5',this)">Group 5</button>
+    <button class="fbtn" onclick="filterCal('trash',this)" style="margin-left:auto;">🗑️ Trash</button>
+    <button class="fbtn" onclick="filterCal('dishes',this)">🍽️ Dishes</button>
+  </div>
+
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<!-- ══════════ RESIDENTS ══════════ -->
+<div class="tab-panel" id="tab-residents">
+  <div class="section-title">Residents & Groups</div>
+  <div class="section-sub">Click any name to edit it — updates everywhere instantly</div>
+  <div class="edit-hint">✏️ <strong>Click a name</strong> to rename. Press Enter or click away to save. Room numbers are fixed; only names change.</div>
+  <div class="groups-grid" id="groups-grid"></div>
+
+  <div class="section-title" style="font-size:20px;margin-bottom:4px;">Send Reminder</div>
+  <div class="section-sub">Generates a ready-to-paste WhatsApp / Signal message</div>
+  <div class="rem-btns" id="rem-btns"></div>
+</div>
+
+<!-- ══════════ NEWCOMER ══════════ -->
+<div class="tab-panel" id="tab-newcomer">
+  <div class="nc-hero">
+    <h2>Welcome to Jardin Botanique 4 🌱</h2>
+    <p>We're glad you're here. This guide covers everything you need to know to feel at home from day one — 23 people, one community.</p>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🏠 Common Areas</h3>
+      <ul class="info-list">
+        <li>Shared kitchen on each floor</li>
+        <li>Living room / lounge area</li>
+        <li>Shared bathrooms & WCs</li>
+        <li>Laundry room (ground floor)</li>
+        <li>Bike storage (basement)</li>
+        <li>Garden / terrace</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>🍳 Your Kitchen Space</h3>
+      <ul class="info-list">
+        <li>1 fridge rack — label with your room number</li>
+        <li>1 drawer in the kitchen — yours to keep</li>
+        <li>Label your food clearly with your name</li>
+        <li>Never use others' labelled items</li>
+        <li>Clean up immediately after cooking</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>☕ Supplied by Cohabs</h3>
+      <ul class="info-list">
+        <li>Salt <span class="supply-tag">Free</span></li>
+        <li>Pepper <span class="supply-tag">Free</span></li>
+        <li>Olive oil <span class="supply-tag">Free</span></li>
+        <li>Coffee (shared machine) <span class="supply-tag">Free</span></li>
+        <li>Toilet paper (communal WCs) <span class="supply-tag">Free</span></li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>🗑️ Duty System</h3>
+      <ul class="info-list">
+        <li>5 groups rotate weekly</li>
+        <li>Trash: outside before 7:00 AM on collection day</li>
+        <li>Dishwasher: empty before 10:00 AM</li>
+        <li>Check the Calendar tab for your schedule</li>
+        <li>Swaps OK — inform the ambassador</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>📜 Key Rules</h3>
+      <ul class="info-list">
+        <li>Quiet hours: 11pm – 8am</li>
+        <li>No smoking indoors</li>
+        <li>Guests max 3 nights/week</li>
+        <li>Clean common areas after use</li>
+        <li>Report maintenance via Cohabs app</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>📞 Contacts</h3>
+      <ul class="info-list">
+        <li>House Ambassador — ask in the group chat</li>
+        <li>Cohabs: cohabs.com</li>
+        <li>Emergency maintenance: Cohabs app</li>
+        <li>House WhatsApp: ask ambassador</li>
+      </ul>
+    </div>
+  </div>
+  <input type="file" id="pdf-in" accept=".pdf" style="display:none" onchange="loadPdf(event)">
+  <div class="pdf-zone" onclick="document.getElementById('pdf-in').click()">
+    <h3>📄 House Information PDF</h3>
+    <p>Upload your Cohabs welcome document — it will be displayed here for all residents.</p>
+    <button class="pdf-up-btn" onclick="event.stopPropagation();document.getElementById('pdf-in').click()">Upload PDF</button>
+  </div>
+  <iframe id="pdf-viewer"></iframe>
+</div>
+
+<!-- ══════════ EMAIL SETUP ══════════ -->
+<div class="tab-panel" id="tab-secrets">
+  <div class="section-title">⚙️ Email Setup Guide</div>
+  <div class="section-sub">How to add emails privately via GitHub Secrets — zero emails stored in the repo</div>
+
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title"><div class="card-icon">🔐</div>How it works</div>
+    <p style="font-size:14px;color:var(--text-mid);line-height:1.7;margin-bottom:14px;">
+      Emails are stored as <strong>GitHub Secrets</strong> — encrypted, never visible in code, never in git history.
+      Each resident has a secret named like <code style="background:var(--cream-dark);padding:1px 5px;border-radius:3px;">EMAIL_G1_M1</code>.
+      The reminder script reads these at runtime via environment variables.
+    </p>
+    <p style="font-size:14px;color:var(--text-mid);line-height:1.7;">
+      Go to your GitHub repo → <strong>Settings → Secrets and variables → Actions → New repository secret</strong>
+      and add each one below.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-icon">📋</div>Secret names → Residents</div>
+    <table class="secrets-table" id="secrets-table"></table>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3 id="modal-title">Reminder</h3>
+    <p id="modal-desc">Copy and paste into WhatsApp or Signal:</p>
+    <textarea id="modal-text" readonly></textarea>
+    <div class="modal-btns">
+      <button class="btn-close" onclick="closeModal()">Close</button>
+      <button class="btn-copy" onclick="copyModal()">📋 Copy message</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA  — matches residents.json exactly
+// ══════════════════════════════════════════════
+const GROUPS = [
+  { id:'G1', name:'Group 1', color:'g1b', hdr:'gh-g1',
+    members:[
+      {room:'101', name:'Alex'},
+      {room:'102', name:'Gianluca'},
+      {room:'103', name:'Stevan'},
+      {room:'104', name:'Anna'},
+      {room:'105', name:'Rafael'},
+    ]},
+  { id:'G2', name:'Group 2', color:'g2b', hdr:'gh-g2',
+    members:[
+      {room:'201', name:'Claudia'},
+      {room:'202', name:'Aurelien'},
+      {room:'203', name:'Eduard'},
+      {room:'204', name:'Antonio'},
+      {room:'205', name:'Victoria'},
+    ]},
+  { id:'G3', name:'Group 3', color:'g3b', hdr:'gh-g3',
+    members:[
+      {room:'301', name:'Maria'},
+      {room:'302', name:'Larissa'},
+      {room:'303', name:'Ayman'},
+      {room:'304', name:'Almudena'},
+      {room:'305', name:'Samy'},
+    ]},
+  { id:'G4', name:'Group 4', color:'g4b', hdr:'gh-g4',
+    members:[
+      {room:'401', name:'Maxine'},
+      {room:'402', name:'Tadeusz'},
+      {room:'403', name:'Adithi'},
+      {room:'404', name:'Gergo'},
+    ]},
+  { id:'G5', name:'Group 5', color:'g5b', hdr:'gh-g5',
+    members:[
+      {room:'501', name:'Franco'},
+      {room:'502', name:'Erwann'},
+      {room:'503', name:'Aysegul'},
+      {room:'504', name:'???'},
+    ]},
+];
+
+// Rotation reference: 9-Feb-2025 = week 0 = Group 1 on trash, Group 2 on dishes
+// From your spreadsheet:
+//   9-Feb  trash=1 dishes=2
+//  16-Feb  trash=3 dishes=4   → trash offset by +0, dishes offset by +1 from trash
+// Pattern: dishes group = trash group index + 1 (mod 5)
+const REF_MONDAY = new Date('2025-02-09');
+
+// Trash schedule — week starts, group rotates G1→G2→G3→G4→G5→G1…
+// From your spreadsheet the rotation for trash is: 1,3,5,2,4,1,3,5,2,4,1,3,5,2,4,1
+// That's not a simple +1 each week — it's +2 each week (mod 5).
+// Let's verify: week0=G1, week1=G3, week2=G5, week3=G2, week4=G4, week5=G1 ✓
+// So trashGroupIndex = (weekIndex * 2) mod 5
+
+// Dishwasher from spreadsheet: 2,4,1,3,5,2,4,1,3,5… = trashGroup+1 (mod 5) ✓
+
+const TRASH_SCHEDULE = [
+  {date:'2025-02-09', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-02-16', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-02-23', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-03-02', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-03-09', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-03-16', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-03-23', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-03-30', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-04-06', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-04-13', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-04-20', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-04-27', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-05-04', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-05-11', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-05-18', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-05-25', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-06-01', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-06-08', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-06-15', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-06-22', type:'blue',   label:'Blue bags (PMC)'},
+  {date:'2025-06-29', type:'blue',   label:'Blue bags (PMC)'},
+];
+
+const HOUSE_RULES = [
+  {n:'01', t:'<strong>Quiet hours</strong> are 11pm to 8am. Be mindful of neighbours above, below, and beside you.'},
+  {n:'02', t:'<strong>No smoking</strong> indoors at any time. Use designated outdoor areas only.'},
+  {n:'03', t:'<strong>Guests</strong> are welcome but may not stay more than 3 consecutive nights per week.'},
+  {n:'04', t:'<strong>Common areas</strong> must be left clean immediately after use — kitchen, bathroom, lounge.'},
+  {n:'05', t:'<strong>Label your food</strong> in the fridge. Never use items that are not yours.'},
+  {n:'06', t:'<strong>Duty groups</strong> rotate weekly. Swaps are allowed but must be communicated.'},
+  {n:'07', t:'<strong>Trash</strong> must be placed outside by 7:00 AM on collection morning.'},
+  {n:'08', t:'<strong>Dishwasher</strong> must be emptied before 10:00 AM by the duty group.'},
+  {n:'09', t:'<strong>Bikes</strong> must be stored in the basement only — not in hallways or rooms.'},
+  {n:'10', t:'<strong>Respect</strong> everyone\'s privacy, space, and schedule. This is a shared home.'},
+];
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+function getMondayOfWeek(d = new Date()) {
+  const date = new Date(d);
+  const day = date.getDay();
+  date.setDate(date.getDate() - (day === 0 ? 6 : day - 1));
+  date.setHours(0,0,0,0);
+  return date;
+}
+
+function weekIdx(monday) {
+  return Math.round((monday - REF_MONDAY) / (7*24*3600*1000));
+}
+
+// From your spreadsheet: trash rotation is +2 per week (mod 5)
+function trashGroupForWeek(wi) {
+  return GROUPS[((wi * 2) % 5 + 5) % 5];
+}
+function dishGroupForWeek(wi) {
+  return GROUPS[(((wi * 2) + 1) % 5 + 5) % 5];
+}
+
+function fmtDate(s) {
+  return new Date(s).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+function fmtShort(d) {
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function names(g) { return g.members.map(m=>m.name).join(', '); }
+function bagClass(t) { return {blue:'blue-t',yellow:'yellow-t',green:'green-t',glass:'glass-t'}[t]||'blue-t'; }
+function bagEmoji(t) { return {blue:'🔵',yellow:'🟡',green:'🟢',glass:'⬜',bulk:'🟫'}[t]||'🗑️'; }
+
+// ══════════════════════════════════════════════
+// RENDER: TICKER
+// ══════════════════════════════════════════════
+function renderTicker() {
+  const wi = weekIdx(getMondayOfWeek());
+  const tg = trashGroupForWeek(wi);
+  const dg = dishGroupForWeek(wi);
+  const t = `🗑️ TRASH THIS WEEK — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)} <span class="sep">|</span> 🗑️ TRASH THIS WEEK — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)}`;
+  document.getElementById('ticker').innerHTML = `<span>${t}</span><span>${t}</span>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER: THIS WEEK
+// ══════════════════════════════════════════════
+function renderThisWeek() {
+  const today = new Date();
+  const mon = getMondayOfWeek();
+  const wi = weekIdx(mon);
+  const tg = trashGroupForWeek(wi);
+  const dg = dishGroupForWeek(wi);
+  const gi_t = GROUPS.indexOf(tg)+1;
+  const gi_d = GROUPS.indexOf(dg)+1;
+
+  const sun = new Date(mon); sun.setDate(sun.getDate()+6);
+  const nextTrash = TRASH_SCHEDULE.find(t => { const d=new Date(t.date); return d>=mon && d<=sun; });
+
+  document.getElementById('this-week').innerHTML = `
+    <div class="duty-row">
+      <div>
+        <div class="duty-label">🗑️ Trash duty</div>
+        <div class="duty-names">${names(tg)}</div>
+      </div>
+      <div class="duty-right">
+        <span class="gbadge g${gi_t}b">${tg.name}</span>
+        ${nextTrash?`<div style="font-size:11px;color:var(--green-muted);margin-top:3px;">${nextTrash.label}</div>`:''}
+      </div>
+    </div>
+    <div class="duty-row">
+      <div>
+        <div class="duty-label">🍽️ Dishwasher</div>
+        <div class="duty-names">${names(dg)}</div>
+      </div>
+      <div class="duty-right">
+        <span class="gbadge g${gi_d}b">${dg.name}</span>
+      </div>
+    </div>
+    <div class="duty-row">
+      <div class="duty-label">📅 Week of</div>
+      <div class="duty-names">${mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER: RULES
+// ══════════════════════════════════════════════
+function renderRules() {
+  document.getElementById('rules').innerHTML = HOUSE_RULES.map(r=>`
+    <div class="rule-item">
+      <span class="rule-num">${r.n}</span>
+      <span class="rule-text">${r.t}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// RENDER: POLL
+// ══════════════════════════════════════════════
+const pollOpts = [
+  {label:'⭐⭐⭐⭐⭐ Spotless — everyone did great!', votes:4},
+  {label:'⭐⭐⭐⭐ Good, minor issues', votes:7},
+  {label:'⭐⭐⭐ Room for improvement', votes:5},
+  {label:'⭐⭐ A few people didn\'t pull their weight', votes:2},
+];
+let pollVoted = false;
+
+function renderPoll() {
+  const total = pollOpts.reduce((a,b)=>a+b.votes,0);
+  document.getElementById('poll').innerHTML = pollOpts.map((o,i)=>`
+    <div class="poll-opt" onclick="vote(${i})">
+      <div class="poll-bar-wrap">
+        <div class="poll-bar-label">${o.label}</div>
+        <div class="poll-bar-track">
+          <div class="poll-bar-fill" style="width:${pollVoted?Math.round(o.votes/total*100):0}%"></div>
+        </div>
+      </div>
+      ${pollVoted?`<span class="poll-pct">${Math.round(o.votes/total*100)}%</span>`:''}
+    </div>`).join('');
+}
+
+function vote(i) {
+  if (pollVoted) return;
+  pollOpts[i].votes++;
+  pollVoted = true;
+  document.getElementById('poll-status').textContent = 'Thanks! Results:';
+  renderPoll();
+  showToast('Vote recorded ✓');
+}
+
+// ══════════════════════════════════════════════
+// RENDER: CALENDAR
+// ══════════════════════════════════════════════
+function renderCalendar() {
+  let html = '';
+
+  TRASH_SCHEDULE.forEach((t,i) => {
+    const wi = weekIdx(new Date(t.date));
+    const tg = trashGroupForWeek(wi);
+    const dg = dishGroupForWeek(wi);
+    const gi_t = GROUPS.indexOf(tg)+1;
+    const gi_d = GROUPS.indexOf(dg)+1;
+
+    // Trash card
+    html += `<div class="cal-card" data-group="${tg.id}" data-type="trash">
+      <div class="cal-head" style="background:var(--green-deep);">
+        <span class="cal-date-str">${fmtDate(t.date)}</span>
+        <span class="cal-type-label trash-lbl">🗑️ Trash</span>
+      </div>
+      <div class="cal-body">
+        <div class="cal-meta">
+          <span class="gbadge g${gi_t}b">${tg.name}</span>
+          <span class="bag-tag ${bagClass(t.type)}">${bagEmoji(t.type)} ${t.label}</span>
+        </div>
+        <div class="chips">${tg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
+        <div class="cal-actions">
+          <button class="act-btn ics-btn" onclick="exportICS('${tg.id}','${t.date}','trash','${t.label}')">📅 Add to calendar</button>
+          <button class="act-btn msg-btn" onclick="openReminder('${tg.id}','${t.date}','trash','${t.label}')">💬 Reminder</button>
+        </div>
+      </div>
+    </div>`;
+
+    // Dishwasher card for same week
+    html += `<div class="cal-card" data-group="${dg.id}" data-type="dishes">
+      <div class="cal-head" style="background:#1a2a3a;">
+        <span class="cal-date-str">${fmtDate(t.date)}</span>
+        <span class="cal-type-label dish-lbl">🍽️ Dishwasher</span>
+      </div>
+      <div class="cal-body">
+        <div class="cal-meta">
+          <span class="gbadge g${gi_d}b">${dg.name}</span>
+          <span style="font-size:12px;color:var(--text-light);">Empty by 10:00 AM</span>
+        </div>
+        <div class="chips">${dg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
+        <div class="cal-actions">
+          <button class="act-btn ics-btn" onclick="exportICS('${dg.id}','${t.date}','dishes','Dishwasher duty')">📅 Add to calendar</button>
+          <button class="act-btn msg-btn" onclick="openReminder('${dg.id}','${t.date}','dishes','Dishwasher duty')">💬 Reminder</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function filterCal(f, btn) {
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.cal-card').forEach(c => {
+    const show = f==='all' ? true
+      : f==='trash'||f==='dishes' ? c.dataset.type===f
+      : c.dataset.group===f;
+    c.classList.toggle('hidden', !show);
+  });
+}
+
+// ══════════════════════════════════════════════
+// RENDER: RESIDENTS
+// ══════════════════════════════════════════════
+function renderGroups() {
+  document.getElementById('groups-grid').innerHTML = GROUPS.map((g,gi)=>`
+    <div class="grp-card">
+      <div class="grp-head ${g.hdr}">
+        <span class="grp-title">${g.name}</span>
+        <span class="gbadge ${g.color}">${g.members.length}</span>
+      </div>
+      ${g.members.map((m,mi)=>`
+        <div class="room-row">
+          <span class="room-lbl">${m.room}</span>
+          <span class="res-name" contenteditable="false"
+            data-gi="${gi}" data-mi="${mi}"
+            onclick="startEdit(this)"
+            onblur="saveEdit(this)"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur()}"
+          >${m.name}</span>
+        </div>`).join('')}
+    </div>`).join('');
+
+  document.getElementById('rem-btns').innerHTML = GROUPS.map(g=>`
+    <button class="rem-btn" onclick="openGroupReminder('${g.id}')">💬 ${g.name}</button>`).join('');
+}
+
+function startEdit(el) {
+  el.contentEditable = 'true';
+  el.focus();
+  const r = document.createRange();
+  r.selectNodeContents(el);
+  window.getSelection().removeAllRanges();
+  window.getSelection().addRange(r);
+}
+
+function saveEdit(el) {
+  el.contentEditable = 'false';
+  const gi = +el.dataset.gi, mi = +el.dataset.mi;
+  GROUPS[gi].members[mi].name = el.textContent.trim();
+  renderCalendar();
+  renderTicker();
+  renderThisWeek();
+  renderSecretsTable();
+  showToast(`Saved: ${el.textContent.trim()} ✓`);
+}
+
+// ══════════════════════════════════════════════
+// RENDER: SECRETS TABLE
+// ══════════════════════════════════════════════
+function renderSecretsTable() {
+  let rows = `<tr><th>GitHub Secret name</th><th>Resident</th><th>Group</th></tr>`;
+  rows += `<tr><td>GMAIL_USER</td><td class="name-col">House Gmail address</td><td>—</td></tr>`;
+  rows += `<tr><td>GMAIL_APP_PASS</td><td class="name-col">Gmail App Password</td><td>—</td></tr>`;
+  rows += `<tr><td>AMBASSADOR_EMAIL</td><td class="name-col">Your email</td><td>—</td></tr>`;
+  GROUPS.forEach((g,gi) => {
+    g.members.forEach((m,mi) => {
+      rows += `<tr><td>EMAIL_G${gi+1}_M${mi+1}</td><td class="name-col">${m.name}</td><td>${g.name}</td></tr>`;
+    });
+  });
+  document.getElementById('secrets-table').innerHTML = rows;
+}
+
+// ══════════════════════════════════════════════
+// ICS EXPORT
+// ══════════════════════════════════════════════
+function exportICS(gid, dateStr, type, label) {
+  const g = GROUPS.find(x=>x.id===gid);
+  const d = new Date(dateStr);
+  const pad = n=>String(n).padStart(2,'0');
+  const icsDate = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
+  const title = type==='trash' ? `🗑️ Trash duty (${label}) — ${g.name}` : `🍽️ Dishwasher duty — ${g.name}`;
+  const desc = type==='trash'
+    ? `Put trash outside before 7:00 AM. Members: ${names(g)}`
+    : `Empty dishwasher before 10:00 AM. Members: ${names(g)}`;
+
+  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JB4//Dashboard//EN\r\nBEGIN:VEVENT\r\nUID:${gid}-${dateStr}-${type}@jb4\r\nDTSTART;VALUE=DATE:${icsDate}\r\nDTEND;VALUE=DATE:${icsDate}\r\nSUMMARY:${title}\r\nDESCRIPTION:${desc}\r\nLOCATION:Jardin Botanique 4, Brussels\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
+  a.download = `jb4-${gid}-${dateStr}-${type}.ics`;
+  a.click();
+  showToast('Calendar file downloaded (.ics) 📅');
+}
+
+// ══════════════════════════════════════════════
+// REMINDER MODAL
+// ══════════════════════════════════════════════
+function openReminder(gid, dateStr, type, label) {
+  const g = GROUPS.find(x=>x.id===gid);
+  const n = names(g);
+  const date = fmtDate(dateStr);
+  const msg = type==='trash'
+    ? `🏡 *Jardin Botanique 4 — Trash Reminder*\n\nHi ${n}! 👋\n\n*${g.name}* is on trash duty this week.\n\n🗑️ ${label}\n📅 ${date}\n⏰ Please put the bags outside *before 7:00 AM*\n\nThank you! 🌿`
+    : `🏡 *Jardin Botanique 4 — Dishwasher Reminder*\n\nHi ${n}! 👋\n\n*${g.name}* is on dishwasher duty this week.\n\n🍽️ Please empty the dishwasher *before 10:00 AM* each morning.\n📅 Week of ${date}\n\nThank you! 🌿`;
+  document.getElementById('modal-title').textContent = `Reminder — ${g.name}`;
+  document.getElementById('modal-text').value = msg;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function openGroupReminder(gid) {
+  const today = new Date();
+  const mon = getMondayOfWeek();
+  const wi = weekIdx(mon);
+  const tg = trashGroupForWeek(wi);
+  const sun = new Date(mon); sun.setDate(sun.getDate()+6);
+  const trash = TRASH_SCHEDULE.find(t=>{const d=new Date(t.date);return d>=mon&&d<=sun;});
+  if (tg.id===gid && trash) { openReminder(gid,trash.date,'trash',trash.label); return; }
+  const dg = dishGroupForWeek(wi);
+  if (dg.id===gid) { openReminder(gid,mon.toISOString().split('T')[0],'dishes','Dishwasher duty'); return; }
+  // Generic
+  const g = GROUPS.find(x=>x.id===gid);
+  document.getElementById('modal-title').textContent = `Reminder — ${g.name}`;
+  document.getElementById('modal-text').value = `🏡 *Jardin Botanique 4*\n\nHi ${names(g)}! 👋\n\nJust a heads-up to check your upcoming duties on the house dashboard. 📅\n\nThank you! 🌿`;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function copyModal() {
+  navigator.clipboard.writeText(document.getElementById('modal-text').value).then(()=>{
+    showToast('Copied! Paste into WhatsApp or Signal 💬');
+    closeModal();
+  });
+}
+
+// ══════════════════════════════════════════════
+// PDF
+// ══════════════════════════════════════════════
+function loadPdf(e) {
+  const f = e.target.files[0]; if(!f) return;
+  document.getElementById('pdf-viewer').src = URL.createObjectURL(f);
+  document.getElementById('pdf-viewer').style.display = 'block';
+  document.querySelector('.pdf-zone').style.display = 'none';
+  showToast('PDF loaded 📄');
+}
+
+// ══════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+renderTicker();
+renderThisWeek();
+renderRules();
+renderPoll();
+renderCalendar();
+renderGroups();
+renderSecretsTable();
+</script>
+</body>
+</html>

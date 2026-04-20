@@ -1,0 +1,91 @@
+{
+  "house": "Jardin Botanique 4",
+  "ambassador": {
+    "name": "Ambassador",
+    "emailSecret": "AMBASSADOR_EMAIL"
+  },
+  "referenceMonday": "2025-02-09",
+  "groups": [
+    {
+      "id": "G1",
+      "name": "Group 1",
+      "color": "yellow",
+      "members": [
+        { "room": "101", "name": "Alex",     "emailSecret": "EMAIL_G1_M1" },
+        { "room": "102", "name": "Gianluca", "emailSecret": "EMAIL_G1_M2" },
+        { "room": "103", "name": "Stevan",   "emailSecret": "EMAIL_G1_M3" },
+        { "room": "104", "name": "Anna",     "emailSecret": "EMAIL_G1_M4" },
+        { "room": "105", "name": "Rafael",   "emailSecret": "EMAIL_G1_M5" }
+      ]
+    },
+    {
+      "id": "G2",
+      "name": "Group 2",
+      "color": "blue",
+      "members": [
+        { "room": "201", "name": "Claudia",  "emailSecret": "EMAIL_G2_M1" },
+        { "room": "202", "name": "Aurelien", "emailSecret": "EMAIL_G2_M2" },
+        { "room": "203", "name": "Eduard",   "emailSecret": "EMAIL_G2_M3" },
+        { "room": "204", "name": "Antonio",  "emailSecret": "EMAIL_G2_M4" },
+        { "room": "205", "name": "Victoria", "emailSecret": "EMAIL_G2_M5" }
+      ]
+    },
+    {
+      "id": "G3",
+      "name": "Group 3",
+      "color": "purple",
+      "members": [
+        { "room": "301", "name": "Maria",    "emailSecret": "EMAIL_G3_M1" },
+        { "room": "302", "name": "Larissa",  "emailSecret": "EMAIL_G3_M2" },
+        { "room": "303", "name": "Ayman",    "emailSecret": "EMAIL_G3_M3" },
+        { "room": "304", "name": "Almudena", "emailSecret": "EMAIL_G3_M4" },
+        { "room": "305", "name": "Samy",     "emailSecret": "EMAIL_G3_M5" }
+      ]
+    },
+    {
+      "id": "G4",
+      "name": "Group 4",
+      "color": "red",
+      "members": [
+        { "room": "401", "name": "Maxine",   "emailSecret": "EMAIL_G4_M1" },
+        { "room": "402", "name": "Tadeusz",  "emailSecret": "EMAIL_G4_M2" },
+        { "room": "403", "name": "Adithi",   "emailSecret": "EMAIL_G4_M3" },
+        { "room": "404", "name": "Gergo",    "emailSecret": "EMAIL_G4_M4" }
+      ]
+    },
+    {
+      "id": "G5",
+      "name": "Group 5",
+      "color": "green",
+      "members": [
+        { "room": "501", "name": "Franco",   "emailSecret": "EMAIL_G5_M1" },
+        { "room": "502", "name": "Erwann",   "emailSecret": "EMAIL_G5_M2" },
+        { "room": "503", "name": "Aysegul",  "emailSecret": "EMAIL_G5_M3" },
+        { "room": "504", "name": "???",       "emailSecret": "EMAIL_G5_M4" }
+      ]
+    }
+  ],
+  "trashSchedule": [
+    { "date": "2025-02-09", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-02-16", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-02-23", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-03-02", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-03-09", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-03-16", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-03-23", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-03-30", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-04-06", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-04-13", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-04-20", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-04-27", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-05-04", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-05-11", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-05-18", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-05-25", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-06-01", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-06-08", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-06-15", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-06-22", "type": "blue",   "label": "Blue bags (PMC)" },
+    { "date": "2025-06-29", "type": "blue",   "label": "Blue bags (PMC)" }
+  ]
+}
