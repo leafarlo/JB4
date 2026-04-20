@@ -6,6 +6,8 @@
 <title>Jardin Botanique 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --green-deep: #1a2e1a;
@@ -42,8 +44,9 @@
   .house-title { font-family:'Playfair Display',serif; font-size:clamp(26px,5vw,44px); color:var(--cream); line-height:1.1; }
   .house-title em { color:var(--gold-light); font-style:italic; }
   .house-meta { font-size:13px; color:var(--green-muted); margin-top:7px; font-weight:300; }
-  .nav { display:flex; margin-top:24px; }
-  .nav-btn { background:none; border:none; color:var(--green-muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; padding:12px 22px; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+  .nav { display:flex; margin-top:24px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+  .nav::-webkit-scrollbar { display:none; }
+  .nav-btn { background:none; border:none; color:var(--green-muted); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; letter-spacing:.06em; text-transform:uppercase; padding:12px 22px; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; flex-shrink:0; }
   .nav-btn:hover { color:var(--cream); }
   .nav-btn.active { color:var(--gold-light); border-bottom-color:var(--gold); }
 
@@ -65,7 +68,7 @@
 
   /* HOME GRID */
   .home-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-  @media(max-width:700px){.home-grid{grid-template-columns:1fr;}}
+  @media(max-width:700px){.home-grid{grid-template-columns:1fr;} .bottom-grid{grid-template-columns:1fr;}}
 
   /* THIS WEEK */
   .week-card { background:var(--green-deep); }
@@ -106,30 +109,33 @@
   .fbtn { padding:6px 14px; border-radius:20px; border:1px solid var(--cream-dark); background:var(--warm-white); font-family:'DM Sans',sans-serif; font-size:12px; cursor:pointer; transition:all .2s; color:var(--text-mid); }
   .fbtn:hover { border-color:var(--green-muted); }
   .fbtn.active { background:var(--green-deep); color:var(--cream); border-color:var(--green-deep); }
-  .cal-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:14px; }
-  .cal-card { background:var(--warm-white); border-radius:10px; border:1px solid rgba(74,124,47,.13); overflow:hidden; transition:transform .2s,box-shadow .2s; }
-  .cal-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px var(--shadow); }
-  .cal-card.hidden { display:none; }
-  .cal-head { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
-  .cal-date-str { font-size:12px; color:rgba(255,255,255,.7); }
-  .cal-type-label { font-size:11px; font-family:'DM Mono',monospace; letter-spacing:.05em; text-transform:uppercase; }
-  .trash-lbl { color:#e8c87a; }
-  .dish-lbl { color:#7ab8e8; }
-  .cal-body { padding:14px 16px; }
-  .cal-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
-  .bag-tag { font-size:11px; padding:2px 8px; border-radius:4px; }
-  .blue-t  { background:rgba(42,107,200,.15); color:#60a0d8; border:1px solid rgba(42,107,200,.25); }
-  .yellow-t{ background:rgba(200,180,0,.15);  color:#c0a830; border:1px solid rgba(200,180,0,.25); }
-  .green-t { background:rgba(50,150,50,.2);   color:#50b850; border:1px solid rgba(50,150,50,.3); }
-  .glass-t { background:rgba(100,180,210,.15);color:#60b0d0; border:1px solid rgba(100,180,210,.3); }
-  .chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
-  .chip { background:var(--cream-dark); border-radius:20px; padding:3px 9px; font-size:12px; color:var(--text-mid); }
-  .cal-actions { display:flex; gap:7px; flex-wrap:wrap; }
-  .act-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:5px; font-size:12px; font-family:'DM Sans',sans-serif; cursor:pointer; border:none; transition:all .2s; }
-  .ics-btn { background:rgba(196,151,58,.1); border:1px solid rgba(196,151,58,.3); color:var(--gold); }
-  .ics-btn:hover { background:rgba(196,151,58,.2); }
-  .msg-btn { background:rgba(74,124,47,.1); border:1px solid rgba(74,124,47,.3); color:var(--green-light); }
-  .msg-btn:hover { background:rgba(74,124,47,.2); }
+  /* Calendar view toggle */
+  .view-btn { padding:6px 14px; border-radius:20px; border:1px solid var(--cream-dark); background:var(--warm-white); font-family:'DM Sans',sans-serif; font-size:12px; cursor:pointer; transition:all .2s; color:var(--text-mid); }
+  .view-btn:hover { border-color:var(--green-muted); }
+  .view-btn.active { background:var(--green-deep); color:var(--cream); border-color:var(--green-deep); }
+  /* Month navigation */
+  .cal-month-nav { display:flex; align-items:center; gap:16px; margin-bottom:14px; }
+  .cal-month-nav button { background:var(--warm-white); border:1px solid var(--cream-dark); border-radius:6px; padding:4px 14px; font-size:20px; cursor:pointer; line-height:1.3; color:var(--text-mid); }
+  .cal-month-nav button:hover { background:var(--cream-dark); }
+  #cal-month-label { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--green-deep); }
+  /* Monthly grid */
+  .month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; overflow-x:auto; }
+  .month-day-hdr { text-align:center; font-size:11px; font-weight:600; color:var(--text-light); letter-spacing:.06em; text-transform:uppercase; padding:6px 2px; }
+  .month-cell { min-height:72px; background:var(--warm-white); border-radius:6px; padding:5px 4px; }
+  .month-cell.other-month { background:var(--cream); opacity:.5; }
+  .month-cell.today { outline:2px solid var(--gold); outline-offset:-2px; }
+  .month-cell-num { font-size:11px; font-weight:600; color:var(--text-mid); margin-bottom:3px; }
+  .cal-badge { display:block; font-size:10px; border-radius:3px; padding:2px 4px; margin-bottom:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.3; }
+  .cal-badge.trash { background:rgba(74,124,47,.15); color:var(--green-mid); }
+  .cal-badge.dish { background:rgba(196,151,58,.12); color:#7a5500; }
+  /* Schedule table */
+  .sched-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .sched-table th { background:var(--green-deep); color:var(--cream); padding:9px 12px; text-align:left; font-weight:500; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+  .sched-table td { padding:10px 12px; border-bottom:1px solid var(--cream-dark); vertical-align:top; }
+  .sched-table tr:hover td { background:rgba(74,124,47,.04); }
+  .sched-table tr.hidden { display:none; }
+  .chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+  .chip { background:var(--cream-dark); border-radius:20px; padding:2px 8px; font-size:11px; color:var(--text-mid); }
 
   /* RESIDENTS */
   .groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(195px,1fr)); gap:14px; margin-bottom:30px; }
@@ -196,7 +202,6 @@
 
 <!-- HEADER -->
 <div class="site-header">
-  <div class="house-eyebrow">Brussels </div>
   <div class="house-title">Jardin <em>Botanique</em> 4</div>
   <div class="house-meta">Community dashboard</div>
   <nav class="nav">
@@ -245,24 +250,38 @@
   <div class="section-title">Planning Calendar</div>
   <div class="section-sub">Trash collection & dishwasher duties · Feb 2025 – Dec 2026</div>
 
-  <div style="margin-bottom:18px;">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
     <button onclick="openGroupPicker()" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--gold);color:var(--green-deep);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.03em;">📅 Add my duties to calendar</button>
-    <span style="font-size:12px;color:var(--text-light);margin-left:12px;">Download all your group's duties as a .ics file</span>
+    <span style="font-size:12px;color:var(--text-light);">Download your group's duties as a .ics file</span>
+    <div style="margin-left:auto;display:flex;gap:6px;">
+      <button class="view-btn active" id="btn-monthly" onclick="setCalView('monthly')">📅 Monthly</button>
+      <button class="view-btn" id="btn-table" onclick="setCalView('table')">📋 Schedule</button>
+    </div>
   </div>
 
-  <div class="filter-row">
-    <span style="font-size:12px;color:var(--text-light);">Filter:</span>
-    <button class="fbtn active" onclick="filterCal('all',this)">All</button>
-    <button class="fbtn" onclick="filterCal('G1',this)">Group 1</button>
-    <button class="fbtn" onclick="filterCal('G2',this)">Group 2</button>
-    <button class="fbtn" onclick="filterCal('G3',this)">Group 3</button>
-    <button class="fbtn" onclick="filterCal('G4',this)">Group 4</button>
-    <button class="fbtn" onclick="filterCal('G5',this)">Group 5</button>
-    <button class="fbtn" onclick="filterCal('trash',this)" style="margin-left:auto;">🗑️ Trash</button>
-    <button class="fbtn" onclick="filterCal('dishes',this)">🍽️ Dishes</button>
+  <!-- Monthly view -->
+  <div id="cal-monthly-wrap">
+    <div class="cal-month-nav">
+      <button onclick="prevMonth()">‹</button>
+      <span id="cal-month-label"></span>
+      <button onclick="nextMonth()">›</button>
+    </div>
+    <div class="month-grid" id="cal-monthly"></div>
   </div>
 
-  <div class="cal-grid" id="cal-grid"></div>
+  <!-- Schedule / table view -->
+  <div id="cal-table-wrap" style="display:none;">
+    <div class="filter-row" style="margin-bottom:16px;">
+      <span style="font-size:12px;color:var(--text-light);">Show group:</span>
+      <button class="fbtn active" onclick="setTableFilter('all',this)">All</button>
+      <button class="fbtn" onclick="setTableFilter('G1',this)">Group 1</button>
+      <button class="fbtn" onclick="setTableFilter('G2',this)">Group 2</button>
+      <button class="fbtn" onclick="setTableFilter('G3',this)">Group 3</button>
+      <button class="fbtn" onclick="setTableFilter('G4',this)">Group 4</button>
+      <button class="fbtn" onclick="setTableFilter('G5',this)">Group 5</button>
+    </div>
+    <div id="cal-table"></div>
+  </div>
 </div>
 
 <!-- ══════════ RESIDENTS ══════════ -->
@@ -339,15 +358,31 @@
       </ul>
     </div>
   </div>
-  <div style="margin-top:24px;">
-    <div class="section-title" style="font-size:20px;margin-bottom:4px;">📄 Cohabs Welcome Guide</div>
-    <div class="section-sub" style="margin-bottom:14px;">Full house information document from Cohabs Brussels</div>
-    <div style="text-align:right;margin-bottom:8px;">
-      <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf" download style="font-size:12px;color:var(--green-light);text-decoration:none;padding:6px 12px;border:1px solid rgba(74,124,47,.3);border-radius:5px;background:rgba(74,124,47,.08);">⬇ Download PDF</a>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px;" class="bottom-grid">
+    <div>
+      <div class="section-title" style="font-size:20px;margin-bottom:4px;">📄 Cohabs Welcome Guide</div>
+      <div class="section-sub" style="margin-bottom:10px;">Full house information document</div>
+      <div style="text-align:right;margin-bottom:8px;">
+        <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf" download style="font-size:12px;color:var(--green-light);text-decoration:none;padding:5px 10px;border:1px solid rgba(74,124,47,.3);border-radius:5px;background:rgba(74,124,47,.08);">⬇ Download</a>
+      </div>
+      <iframe src="Welcome%20to%20Cohabs%20-%20Brussels.pdf#view=FitH" style="width:100%;height:52vh;border-radius:10px;border:1px solid var(--cream-dark);">
+        <p style="padding:20px;color:var(--text-light);">Your browser can't display PDFs inline. <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf">Download it here.</a></p>
+      </iframe>
     </div>
-    <iframe src="Welcome%20to%20Cohabs%20-%20Brussels.pdf#zoom=page-width" style="width:100%;height:85vh;border-radius:10px;border:1px solid var(--cream-dark);">
-      <p style="padding:20px;color:var(--text-light);">Your browser can't display PDFs inline. <a href="Welcome%20to%20Cohabs%20-%20Brussels.pdf">Download it here.</a></p>
-    </iframe>
+    <div>
+      <div class="section-title" style="font-size:20px;margin-bottom:4px;">📍 Useful Places</div>
+      <div class="section-sub" style="margin-bottom:10px;">Explore the neighbourhood — click a pin for details</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;" id="map-filter-btns">
+        <button class="fbtn active" onclick="filterMap('all',this)">All</button>
+        <button class="fbtn" onclick="filterMap('groceries',this)">🛒 Groceries</button>
+        <button class="fbtn" onclick="filterMap('health',this)">🏥 Health</button>
+        <button class="fbtn" onclick="filterMap('sport',this)">🏋️ Sport</button>
+        <button class="fbtn" onclick="filterMap('nature',this)">🌿 Nature</button>
+        <button class="fbtn" onclick="filterMap('cultural',this)">🎭 Cultural</button>
+        <button class="fbtn" onclick="filterMap('social',this)">🍺 Social</button>
+      </div>
+      <div id="map" style="width:100%;height:52vh;border-radius:10px;border:1px solid var(--cream-dark);"></div>
+    </div>
   </div>
 </div>
 
@@ -592,12 +627,12 @@ function weekIdx(monday) {
   return Math.round((monday - REF_MONDAY) / (7*24*3600*1000));
 }
 
-// From your spreadsheet: trash rotation is +2 per week (mod 5)
+// Trash rotation: +2 per week (mod 5), offset +1 to align with actual planning
 function trashGroupForWeek(wi) {
-  return GROUPS[((wi * 2) % 5 + 5) % 5];
+  return GROUPS[((wi * 2 + 1) % 5 + 5) % 5];
 }
 function dishGroupForWeek(wi) {
-  return GROUPS[(((wi * 2) + 1) % 5 + 5) % 5];
+  return GROUPS[((wi * 2 + 2) % 5 + 5) % 5];
 }
 
 function fmtDate(s) {
@@ -617,7 +652,7 @@ function renderTicker() {
   const wi = weekIdx(getMondayOfWeek());
   const tg = trashGroupForWeek(wi);
   const dg = dishGroupForWeek(wi);
-  const t = `🗑️ TRASH THIS WEEK — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)} <span class="sep">|</span> 🗑️ TRASH THIS WEEK — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)}`;
+  const t = `🗑️ TRASH — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)} <span class="sep">|</span> 🗑️ TRASH — ${tg.name.toUpperCase()}: ${names(tg)} <span class="sep">|</span> 🍽️ DISHWASHER — ${dg.name.toUpperCase()}: ${names(dg)}`;
   document.getElementById('ticker').innerHTML = `<span>${t}</span><span>${t}</span>`;
 }
 
@@ -677,59 +712,145 @@ function renderRules() {
 // ══════════════════════════════════════════════
 // RENDER: CALENDAR
 // ══════════════════════════════════════════════
-function renderCalendar() {
-  let html = '';
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calView = 'monthly';
+let calTableFilter = 'all';
 
-  TRASH_SCHEDULE.forEach((t,i) => {
-    const wi = weekIdx(new Date(t.date));
-    const tg = trashGroupForWeek(wi);
-    const dg = dishGroupForWeek(wi);
-    const gi_t = GROUPS.indexOf(tg)+1;
-    const gi_d = GROUPS.indexOf(dg)+1;
-
-    // Trash card
-    html += `<div class="cal-card" data-group="${tg.id}" data-type="trash">
-      <div class="cal-head" style="background:var(--green-deep);">
-        <span class="cal-date-str">${fmtDate(t.date)}</span>
-        <span class="cal-type-label trash-lbl">🗑️ Trash</span>
-      </div>
-      <div class="cal-body">
-        <div class="cal-meta">
-          <span class="gbadge g${gi_t}b">${tg.name}</span>
-          <span class="bag-tag ${bagClass(t.type)}">${bagEmoji(t.type)} ${t.label}</span>
-        </div>
-        <div class="chips">${tg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
-      </div>
-    </div>`;
-
-    // Dishwasher card for same week
-    html += `<div class="cal-card" data-group="${dg.id}" data-type="dishes">
-      <div class="cal-head" style="background:#1a2a3a;">
-        <span class="cal-date-str">${fmtDate(t.date)}</span>
-        <span class="cal-type-label dish-lbl">🍽️ Dishwasher</span>
-      </div>
-      <div class="cal-body">
-        <div class="cal-meta">
-          <span class="gbadge g${gi_d}b">${dg.name}</span>
-          <span style="font-size:12px;color:var(--text-light);">Empty by 10:00 AM</span>
-        </div>
-        <div class="chips">${dg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
-      </div>
-    </div>`;
-  });
-
-  document.getElementById('cal-grid').innerHTML = html;
+function setCalView(v) {
+  calView = v;
+  document.getElementById('cal-monthly-wrap').style.display = v === 'monthly' ? '' : 'none';
+  document.getElementById('cal-table-wrap').style.display   = v === 'table'   ? '' : 'none';
+  document.getElementById('btn-monthly').classList.toggle('active', v === 'monthly');
+  document.getElementById('btn-table').classList.toggle('active', v === 'table');
+  renderCalendar();
 }
 
-function filterCal(f, btn) {
-  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+function prevMonth() {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function nextMonth() {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+}
+
+function setTableFilter(gid, btn) {
+  calTableFilter = gid;
+  document.querySelectorAll('#cal-table-wrap .fbtn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.cal-card').forEach(c => {
-    const show = f==='all' ? true
-      : f==='trash'||f==='dishes' ? c.dataset.type===f
-      : c.dataset.group===f;
-    c.classList.toggle('hidden', !show);
-  });
+  renderTableView();
+}
+
+function renderCalendar() {
+  if (calView === 'monthly') renderMonthlyView();
+  else renderTableView();
+}
+
+function renderMonthlyView() {
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAY_HDRS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  document.getElementById('cal-month-label').textContent = `${MONTH_NAMES[calMonth]} ${calYear}`;
+
+  // Grid starts on Monday of the week containing the 1st
+  const firstOfMonth = new Date(calYear, calMonth, 1);
+  const dowFirst = firstOfMonth.getDay(); // 0=Sun
+  const startOffset = dowFirst === 0 ? 6 : dowFirst - 1;
+  const gridStart = new Date(firstOfMonth);
+  gridStart.setDate(1 - startOffset);
+
+  // Grid ends on Sunday of the week containing the last day
+  const lastOfMonth = new Date(calYear, calMonth + 1, 0);
+  const dowLast = lastOfMonth.getDay();
+  const endOffset = dowLast === 0 ? 0 : 7 - dowLast;
+  const gridEnd = new Date(lastOfMonth);
+  gridEnd.setDate(lastOfMonth.getDate() + endOffset);
+
+  let html = DAY_HDRS.map(d => `<div class="month-day-hdr">${d}</div>`).join('');
+
+  const cur = new Date(gridStart);
+  while (cur <= gridEnd) {
+    const isThisMonth = cur.getMonth() === calMonth;
+    const isToday = cur.getTime() === today.getTime();
+    const dow = cur.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+
+    // Week's Sunday (which is how TRASH_SCHEDULE indexes)
+    const sun = new Date(cur);
+    sun.setDate(cur.getDate() - dow);
+    const wi = weekIdx(sun);
+    const tg = trashGroupForWeek(wi);
+    const dg = dishGroupForWeek(wi);
+    const tgi = GROUPS.indexOf(tg) + 1;
+    const dgi = GROUPS.indexOf(dg) + 1;
+
+    let badges = `<span class="cal-badge dish">🍽️ G${dgi}</span>`;
+    if (dow === 1) badges += `<span class="cal-badge trash">🔵 G${tgi}</span>`;
+    if (dow === 4) badges += `<span class="cal-badge trash">🟡 G${tgi}</span>`;
+    if (dow === 5) badges += `<span class="cal-badge trash">🟢 G${tgi}</span>`;
+
+    html += `<div class="month-cell${isThisMonth ? '' : ' other-month'}${isToday ? ' today' : ''}">
+      <div class="month-cell-num">${cur.getDate()}</div>
+      ${badges}
+    </div>`;
+    cur.setDate(cur.getDate() + 1);
+  }
+
+  document.getElementById('cal-monthly').innerHTML = html;
+}
+
+function renderTableView() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const curSun = new Date(today);
+  curSun.setDate(today.getDate() - today.getDay());
+
+  const rows = TRASH_SCHEDULE
+    .filter(t => new Date(t.date) >= curSun)
+    .map(t => {
+      const sun = new Date(t.date);
+      const mon = new Date(sun); mon.setDate(sun.getDate() + 1);
+      const thu = new Date(mon); thu.setDate(mon.getDate() + 3);
+      const fri = new Date(mon); fri.setDate(mon.getDate() + 4);
+      const wi = weekIdx(sun);
+      const tg = trashGroupForWeek(wi);
+      const dg = dishGroupForWeek(wi);
+      const tgi = GROUPS.indexOf(tg) + 1;
+      const dgi = GROUPS.indexOf(dg) + 1;
+
+      const match = calTableFilter === 'all' || tg.id === calTableFilter || dg.id === calTableFilter;
+      const fmt = d => d.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+
+      return `<tr class="${match ? '' : 'hidden'}" data-trash="${tg.id}" data-dish="${dg.id}">
+        <td><strong>${fmt(mon)}</strong><br><span style="font-size:11px;color:var(--text-light);">${calYear !== mon.getFullYear() ? mon.getFullYear() : ''}</span></td>
+        <td>
+          <span class="gbadge g${tgi}b">${tg.name}</span>
+          <div class="chips">${tg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
+        </td>
+        <td style="font-size:12px;line-height:1.8;">
+          🔵 Blue · <strong>${fmt(mon)}</strong><br>
+          🟡 Yellow · <strong>${fmt(thu)}</strong><br>
+          🟢 Green · <strong>${fmt(fri)}</strong>
+        </td>
+        <td>
+          <span class="gbadge g${dgi}b">${dg.name}</span>
+          <div class="chips">${dg.members.map(m=>`<span class="chip">${m.name}</span>`).join('')}</div>
+        </td>
+      </tr>`;
+    }).join('');
+
+  document.getElementById('cal-table').innerHTML = `
+    <table class="sched-table">
+      <thead><tr>
+        <th>Week of</th>
+        <th>🗑️ Trash group</th>
+        <th>Collection days</th>
+        <th>🍽️ Dishwasher group</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
 // ══════════════════════════════════════════════
@@ -889,6 +1010,7 @@ function showTab(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+  if (id === 'newcomer') initMap();
 }
 
 // ══════════════════════════════════════════════
@@ -899,6 +1021,69 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════
+// MAP — Useful Places
+// ══════════════════════════════════════════════
+// All coordinates verified via OpenStreetMap Nominatim
+const PLACES = [
+  // Groceries
+  {name:'Carrefour Express',        cat:'groceries', lat:50.8548190, lng:4.3667386, note:'Supermarket · Rue Royale (closest)'},
+  {name:'Carrefour Express',        cat:'groceries', lat:50.8580086, lng:4.3684342, note:'Supermarket · Rue Royale (north)'},
+  // Health
+  {name:'Clinique Saint-Jean',      cat:'health',    lat:50.8539286, lng:4.3602880, note:'Hospital · Bd du Jardin Botanique'},
+  // Sport
+  {name:'Basic-Fit Rogier',         cat:'sport',     lat:50.8570185, lng:4.3556544, note:'Gym · Rue des Croisades 19 · 24/7'},
+  {name:'Les Bains de Saint-Josse', cat:'sport',     lat:50.8568170, lng:4.3654199, note:'Public swimming pool'},
+  // Nature
+  {name:'Jardin Botanique',         cat:'nature',    lat:50.8547117, lng:4.3648337, note:'Botanical garden — on your doorstep!'},
+  {name:'Parc de Bruxelles',        cat:'nature',    lat:50.8445950, lng:4.3636534, note:'Royal park · 15 min walk'},
+  {name:'Parc Josaphat',            cat:'nature',    lat:50.8641004, lng:4.3832370, note:'Large park in Schaerbeek · 20 min walk'},
+  // Cultural
+  {name:'Le Botanique (venue)',     cat:'cultural',  lat:50.8549274, lng:4.3652033, note:'Concerts & exhibitions · next door!'},
+  {name:'Bozar',                    cat:'cultural',  lat:50.8442043, lng:4.3590833, note:'Centre for Fine Arts · Rue Ravenstein 23'},
+  // Social — add your favourites here!
+];
+
+let mapInstance = null;
+let mapMarkers = [];
+
+const CAT_COLORS = {
+  groceries:'#e67e22', health:'#e74c3c', sport:'#3498db',
+  nature:'#27ae60',    cultural:'#9b59b6', social:'#f39c12'
+};
+
+function initMap() {
+  if (mapInstance) return;
+  mapInstance = L.map('map').setView([50.8542519, 4.3679838], 16);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'© OpenStreetMap contributors', maxZoom:19
+  }).addTo(mapInstance);
+
+  // House marker
+  const houseIcon = L.divIcon({html:'<div style="background:#1a2e1a;color:#e8c87a;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid #e8c87a;">🏡</div>', className:'', iconSize:[28,28], iconAnchor:[14,14]});
+  L.marker([50.8542519, 4.3679838], {icon:houseIcon}).addTo(mapInstance).bindPopup('<strong>Jardin Botanique 4</strong><br>Rue Traversière 4, 1210 Saint-Josse');
+
+  PLACES.forEach(p => {
+    const icon = L.divIcon({
+      html:`<div style="background:${CAT_COLORS[p.cat]};color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);"></div>`,
+      className:'', iconSize:[22,22], iconAnchor:[11,11]
+    });
+    const m = L.marker([p.lat, p.lng], {icon}).bindPopup(`<strong>${p.name}</strong><br><em style="color:${CAT_COLORS[p.cat]}">${p.cat}</em><br>${p.note}`);
+    m._cat = p.cat;
+    m.addTo(mapInstance);
+    mapMarkers.push(m);
+  });
+}
+
+function filterMap(cat, btn) {
+  document.querySelectorAll('#map-filter-btns .fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  mapMarkers.forEach(m => {
+    if (cat === 'all' || m._cat === cat) m.addTo(mapInstance);
+    else mapInstance.removeLayer(m);
+  });
 }
 
 // ══════════════════════════════════════════════
