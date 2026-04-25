@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
   :root {
     --green-deep: #1a2e1a;
@@ -185,6 +187,47 @@
   .secrets-table td { padding:7px 12px; border-bottom:1px solid var(--cream-dark); font-family:'DM Mono',monospace; color:var(--text-mid); }
   .secrets-table tr:last-child td { border-bottom:none; }
   .name-col { color:var(--text-dark); font-family:'DM Sans',sans-serif; font-weight:500; }
+
+  /* TASK SYSTEM */
+  .week-columns { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:580px){ .week-columns{grid-template-columns:1fr;} }
+  .week-col-header { font-size:11px; color:var(--gold); font-weight:600; letter-spacing:.07em; text-transform:uppercase; padding:4px 0 8px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:6px; display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .task-row { display:flex; align-items:center; gap:7px; padding:6px 7px; border-radius:6px; margin-bottom:3px; transition:background .15s; }
+  .task-row.done { background:rgba(74,124,47,.22); }
+  .task-row.pending { background:rgba(255,255,255,.04); cursor:pointer; }
+  .task-row.pending:hover { background:rgba(255,255,255,.09); }
+  .task-check { font-size:13px; flex-shrink:0; width:16px; text-align:center; color:var(--green-muted); }
+  .task-check.ok { color:#80d080; }
+  .task-info { flex:1; min-width:0; }
+  .task-label { font-size:12px; color:var(--cream); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .task-done-by { font-size:10px; color:var(--green-muted); margin-top:1px; }
+  .task-pending-by { font-size:10px; color:rgba(255,255,255,.3); margin-top:1px; }
+  .task-tap { font-size:10px; color:var(--gold-light); opacity:.65; flex-shrink:0; }
+  .task-undo { background:none; border:none; color:rgba(255,255,255,.25); font-size:12px; cursor:pointer; padding:2px 3px; border-radius:3px; flex-shrink:0; line-height:1; }
+  .task-undo:hover { color:rgba(255,255,255,.65); background:rgba(255,255,255,.08); }
+  .task-completers { display:flex; flex-direction:column; gap:2px; margin-top:2px; }
+  .task-completer { display:flex; align-items:center; gap:5px; }
+  .completer-name { font-size:10px; color:var(--green-muted); }
+  .completer-time { font-size:10px; color:rgba(255,255,255,.3); }
+  .task-add-more { background:none; border:1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.4); font-size:10px; cursor:pointer; padding:2px 6px; border-radius:10px; flex-shrink:0; white-space:nowrap; transition:all .15s; }
+  .task-add-more:hover { border-color:var(--gold-light); color:var(--gold-light); }
+
+  /* NAME PICKER */
+  .name-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:12px; }
+  .name-btn { padding:9px 6px; background:var(--cream); border:1px solid var(--cream-dark); border-radius:7px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; color:var(--text-dark); text-align:center; }
+  .name-btn:hover { background:var(--green-pale); border-color:var(--green-muted); }
+
+  /* LEADERBOARD */
+  .lb-month { font-size:13px; color:var(--text-light); margin-bottom:22px; font-style:italic; }
+  .lb-row { display:flex; align-items:center; gap:14px; padding:14px 18px; background:var(--warm-white); border-radius:10px; border:1px solid rgba(74,124,47,.13); margin-bottom:10px; box-shadow:0 1px 4px var(--shadow); }
+  .lb-rank { font-size:24px; flex-shrink:0; width:34px; text-align:center; }
+  .lb-name { font-size:15px; font-weight:500; color:var(--text-dark); flex:1; }
+  .lb-bar-wrap { flex:2; }
+  .lb-bar-track { height:6px; background:var(--cream-dark); border-radius:3px; overflow:hidden; }
+  .lb-bar-fill { height:100%; background:var(--green-light); border-radius:3px; transition:width .4s; }
+  .lb-count { font-family:'DM Mono',monospace; font-size:12px; color:var(--text-light); white-space:nowrap; }
+  .lb-empty { text-align:center; padding:50px 20px; color:var(--text-light); font-size:14px; line-height:1.8; }
+  @media(max-width:680px){ .lb-grid{ grid-template-columns:1fr !important; } }
 </style>
 </head>
 <body>
@@ -206,6 +249,7 @@
     <button class="nav-btn" onclick="showTab('calendar',this)">Calendar</button>
     <button class="nav-btn" onclick="showTab('residents',this)">Residents</button>
     <button class="nav-btn" onclick="showTab('newcomer',this)">Newcomer Guide</button>
+    <button class="nav-btn" onclick="showTab('leaderboard',this)">Leaderboard</button>
     <button class="nav-btn" onclick="showTab('secrets',this)" style="display:none">⚙️ Email Setup</button>
   </nav>
 </div>
@@ -382,6 +426,22 @@
   </div>
 </div>
 
+<!-- ══════════ LEADERBOARD ══════════ -->
+<div class="tab-panel" id="tab-leaderboard">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;" class="lb-grid">
+    <div>
+      <div class="section-title">Top 5 🏆</div>
+      <div class="section-sub">Most tasks completed last month</div>
+      <div id="leaderboard-top"></div>
+    </div>
+    <div>
+      <div class="section-title">Bottom 5 😬</div>
+      <div class="section-sub">Fewest tasks completed last month</div>
+      <div id="leaderboard-bottom"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ EMAIL SETUP ══════════ -->
 <div class="tab-panel" id="tab-secrets">
   <div class="section-title">⚙️ Email Setup Guide</div>
@@ -444,6 +504,17 @@
     <p style="margin-top:12px;font-size:12px;color:var(--text-light);">If you imported into your main calendar instead, you'll need to delete the events one by one — or re-import with the file below (works in Outlook).</p>
     <div class="modal-btns" style="margin-top:16px;">
       <button class="btn-close" onclick="document.getElementById('remove-help-overlay').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="task-picker-overlay" onclick="if(event.target===this)closeTaskPicker()">
+  <div class="modal" style="max-width:430px;">
+    <h3>Who completed this?</h3>
+    <p>Tap your name to mark this task as done.</p>
+    <div class="name-grid" id="task-name-grid"></div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-close" onclick="closeTaskPicker()">Cancel</button>
     </div>
   </div>
 </div>
@@ -619,7 +690,7 @@ const HOUSE_RULES = [
   {n:'05', t:'<strong>Label your shelf</strong> in the fridge. Never use items that are not yours.'},
   {n:'06', t:'<strong>Duty groups</strong> rotate weekly. Swaps are allowed, just communicate them :).'},
   {n:'07', t:'<strong>Trash</strong> Mon/Thu: bags out the evening before (6pm–midnight). Friday: out by 9:00 AM, check the calendar.'},
-  {n:'08', t:'<strong>Dishwasher</strong> must be emptied daily by the duty group.'},
+{n:'08', t:'<strong>Dishwasher</strong> must be emptied daily by the duty group.<br><strong style="color:#c0392b;">Important</strong>: regularly check the salt and cleaning reserve of the dishwasher'},
   {n:'09', t:'<strong>Bikes</strong> must be stored in the bike room.'},
   {n:'10', t:'<strong>Respect</strong> everyone\'s privacy, space, and schedule. This is a shared home :)'},
 ];
@@ -669,44 +740,210 @@ function renderTicker() {
 }
 
 // ══════════════════════════════════════════════
+// FIREBASE — shared real-time task storage
+// ══════════════════════════════════════════════
+// Paste your Firebase project config here.
+// See SETUP_NOTES.txt for step-by-step instructions.
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAN9csH1m4P6KIWpQTXjdfu1cHWkpwHPvY",
+  authDomain: "jbotan4.firebaseapp.com",
+  databaseURL: "https://jbotan4-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId: "jbotan4",
+  storageBucket: "jbotan4.firebasestorage.app",
+  messagingSenderId: "1037838517284",
+  appId: "1:1037838517284:web:78d501a54bbe23cbac44b1"
+};
+
+firebase.initializeApp(firebaseConfig);
+const _db = firebase.database();
+let _tasks = {};
+
+// Real-time listener — fires on load and on every change from any device
+_db.ref('tasks').on('value', snapshot => {
+  _tasks = snapshot.val() || {};
+  renderThisWeek();
+  renderLeaderboard();
+});
+
+function loadTasks() { return _tasks; }
+
+// ══════════════════════════════════════════════
+// TASK SYSTEM
+// ══════════════════════════════════════════════
+function openTaskPicker(taskId) {
+  const alreadyDone = Object.keys(_tasks[taskId] || {});
+  const available = GROUPS.flatMap(g => g.members.map(m => m.name)).sort()
+    .filter(n => !alreadyDone.includes(n));
+  if (!available.length) { showToast('Everyone has already checked this off!'); return; }
+  document.getElementById('task-name-grid').innerHTML = available.map(n =>
+    `<button class="name-btn" onclick="completeTask('${taskId}','${n}')">${n}</button>`
+  ).join('');
+  document.getElementById('task-picker-overlay').classList.add('open');
+}
+function closeTaskPicker() {
+  document.getElementById('task-picker-overlay').classList.remove('open');
+}
+function completeTask(taskId, personName) {
+  _db.ref('tasks/' + taskId + '/' + personName).set({ time: new Date().toISOString() });
+  closeTaskPicker();
+  showToast(`✓ ${personName} marked task as done!`);
+}
+function removeCompleter(taskId, personName) {
+  _db.ref('tasks/' + taskId + '/' + personName).remove();
+  showToast(`Removed ${personName}`);
+}
+
+// ══════════════════════════════════════════════
 // RENDER: THIS WEEK
 // ══════════════════════════════════════════════
 function renderThisWeek() {
-  const today = new Date();
   const mon = getMondayOfWeek();
   const wi = weekIdx(mon);
   const tg = trashGroupForWeek(wi);
   const dg = dishGroupForWeek(wi);
   const gi_t = GROUPS.indexOf(tg)+1;
   const gi_d = GROUPS.indexOf(dg)+1;
+  const tasks = loadTasks();
 
-  const sun = new Date(mon); sun.setDate(sun.getDate()+6);
-  const nextTrash = TRASH_SCHEDULE.find(t => { const d=new Date(t.date); return d>=mon && d<=sun; });
+  const pad2 = n => String(n).padStart(2,'0');
+  const dateStr = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const sun = new Date(mon); sun.setDate(mon.getDate()-1);
+  const thu = new Date(mon); thu.setDate(mon.getDate()+3);
+  const DAY_ABBR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  function taskRow(taskId, label, group) {
+    const completions = tasks[taskId] || {};
+    const completers = Object.entries(completions)
+      .sort((a,b) => new Date(a[1].time) - new Date(b[1].time));
+    const gi = GROUPS.indexOf(group)+1;
+
+    if (!completers.length) {
+      return `<div class="task-row pending" onclick="openTaskPicker('${taskId}')">
+        <span class="task-check">○</span>
+        <div class="task-info">
+          <div class="task-label">${label}</div>
+          <div class="task-pending-by"><span class="gbadge g${gi}b">${group.name}</span> · not done</div>
+        </div>
+        <span class="task-tap">tap ›</span>
+      </div>`;
+    }
+
+    const completersHtml = completers.map(([name, c]) => {
+      const dt = new Date(c.time);
+      const timeStr = `${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
+      return `<div class="task-completer">
+        <span class="completer-name">${name}</span>
+        <span class="completer-time">· ${timeStr}</span>
+        <button class="task-undo" onclick="event.stopPropagation();removeCompleter('${taskId}','${name}')" title="Remove">×</button>
+      </div>`;
+    }).join('');
+
+    return `<div class="task-row done">
+      <span class="task-check ok">✓</span>
+      <div class="task-info">
+        <div class="task-label">${label}</div>
+        <div class="task-completers">${completersHtml}</div>
+      </div>
+      <button class="task-add-more" onclick="openTaskPicker('${taskId}')">+ add</button>
+    </div>`;
+  }
+
+  let trashHtml = taskRow(`glass_${dateStr(sun)}`,      '⬜ Glass (Sun 8pm)',      tg);
+  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`,   '🔵 Blue bags (Mon)',      tg);
+  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`,   '🟡 Yellow bags (Thu 8am)',tg);
+
+  let dishHtml = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate()+i);
+    const dayFmt = d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    dishHtml += taskRow(`dish_${dateStr(d)}`, `🍽️ ${DAY_ABBR[i]} ${dayFmt}`, dg);
+  }
 
   document.getElementById('this-week').innerHTML = `
-    <div class="duty-row">
-      <div>
-        <div class="duty-label">🗑️ Trash duty</div>
-        <div class="duty-names">${names(tg)}</div>
+    <div class="week-columns">
+      <div class="week-col">
+        <div class="week-col-header">🗑️ Trash <span class="gbadge g${gi_t}b">${tg.name}</span></div>
+        ${trashHtml}
       </div>
-      <div class="duty-right">
-        <span class="gbadge g${gi_t}b">${tg.name}</span>
-        ${nextTrash?`<div style="font-size:11px;color:var(--green-muted);margin-top:3px;">${nextTrash.label}</div>`:''}
-      </div>
-    </div>
-    <div class="duty-row">
-      <div>
-        <div class="duty-label">🍽️ Dishwasher</div>
-        <div class="duty-names">${names(dg)}</div>
-      </div>
-      <div class="duty-right">
-        <span class="gbadge g${gi_d}b">${dg.name}</span>
+      <div class="week-col">
+        <div class="week-col-header">🍽️ Dishwasher <span class="gbadge g${gi_d}b">${dg.name}</span></div>
+        ${dishHtml}
       </div>
     </div>
-    <div class="duty-row">
-      <div class="duty-label">📅 Week of</div>
-      <div class="duty-names">${mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</div>
+    <div style="font-size:11px;color:var(--green-muted);padding-top:8px;margin-top:6px;border-top:1px solid rgba(255,255,255,.08);">
+      📅 Week of ${mon.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}
     </div>`;
+}
+
+// ══════════════════════════════════════════════
+// RENDER: LEADERBOARD
+// ══════════════════════════════════════════════
+function renderLeaderboard() {
+  const elTop = document.getElementById('leaderboard-top');
+  const elBot = document.getElementById('leaderboard-bottom');
+  if (!elTop || !elBot) return;
+
+  const tasks = loadTasks();
+  const now = new Date();
+  const lmYear  = now.getMonth() === 0 ? now.getFullYear()-1 : now.getFullYear();
+  const lmMonth = now.getMonth() === 0 ? 11 : now.getMonth()-1;
+  const lmStart = new Date(lmYear, lmMonth, 1);
+  const lmEnd   = new Date(lmYear, lmMonth+1, 0, 23, 59, 59);
+  const monthName = lmStart.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  // Seed all residents with 0 so everyone appears in bottom 5
+  const allNames = GROUPS.flatMap(g => g.members.map(m => m.name));
+  const counts = Object.fromEntries(allNames.map(n => [n, 0]));
+  for (const completion of Object.values(tasks)) {
+    if (!completion?.time) continue;
+    const t = new Date(completion.time);
+    if (t >= lmStart && t <= lmEnd) {
+      counts[completion.name] = (counts[completion.name] || 0) + 1;
+    }
+  }
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const top5   = sorted.slice(0, 5);
+  const bot5   = [...sorted].sort((a,b) => a[1]-b[1]).slice(0, 5);
+  const maxCount = top5.length && top5[0][1] > 0 ? top5[0][1] : 1;
+  const topMedals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  const botEmoji  = ['😬','😴','🛋️','🥲','😑'];
+
+  const anyDone = top5.some(([,c]) => c > 0);
+
+  function topRow([name,count], i) {
+    return `<div class="lb-row">
+      <div class="lb-rank">${topMedals[i]}</div>
+      <div class="lb-name">${name}</div>
+      <div class="lb-bar-wrap">
+        <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${Math.round(count/maxCount*100)}%"></div></div>
+      </div>
+      <div class="lb-count">${count} task${count!==1?'s':''}</div>
+    </div>`;
+  }
+
+  function botRow([name,count], i) {
+    return `<div class="lb-row" style="border-color:rgba(192,57,43,.15);">
+      <div class="lb-rank">${botEmoji[i]}</div>
+      <div class="lb-name">${name}</div>
+      <div class="lb-bar-wrap">
+        <div class="lb-bar-track"><div class="lb-bar-fill" style="width:${Math.round(count/maxCount*100)}%;background:#c0392b;opacity:.5;"></div></div>
+      </div>
+      <div class="lb-count">${count} task${count!==1?'s':''}</div>
+    </div>`;
+  }
+
+  const monthLabel = `<div class="lb-month">${monthName}</div>`;
+
+  if (!anyDone) {
+    elTop.innerHTML = `<div class="lb-empty">No tasks completed in <strong>${monthName}</strong> yet.</div>`;
+    elBot.innerHTML = `<div class="lb-empty">Complete tasks this month — you'll appear here next month!</div>`;
+    return;
+  }
+
+  elTop.innerHTML = monthLabel + top5.map(topRow).join('');
+  elBot.innerHTML = monthLabel + bot5.map(botRow).join('');
 }
 
 // ══════════════════════════════════════════════
@@ -960,12 +1197,12 @@ function exportGroupICS(gid, cancel) {
     const mem = names(g);
 
     if (tg.id === gid) {
-      events += vevent(`${gid}-${t.date}-glass@jb4`,  fmtDT(sun,18), fmtDT(sun,18,30),
-        `⬜ Glass out — ${g.name}`,  `Put glass outside Sunday evening. ${mem}`);
+      events += vevent(`${gid}-${t.date}-glass@jb4`,  fmtDT(sun,20), fmtDT(sun,20,30),
+        `⬜ Glass out — ${g.name}`,  `Put glass outside Sunday evening at 8pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-blue@jb4`,   fmtDT(mon,18), fmtDT(mon,18,30),
         `🔵 Blue bags out — ${g.name}`, `Put blue/PMC bags outside. ${mem}`);
-      events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,18), fmtDT(thu,18,30),
-        `🟡 Yellow bags out — ${g.name}`, `Put yellow bags outside. ${mem}`);
+      events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,8),  fmtDT(thu,8,30),
+        `🟡 Yellow bags out — ${g.name}`, `Put yellow bags outside Thursday morning. ${mem}`);
       events += vevent(`${gid}-${t.date}-green@jb4`,  fmtDT(fri,18), fmtDT(fri,18,30),
         `🟢 Green bags out — ${g.name}`, `Put green/organic bags outside. ${mem}`);
     }
@@ -1118,6 +1355,7 @@ renderRules();
 renderCalendar();
 renderGroups();
 renderSecretsTable();
+renderLeaderboard();
 </script>
 </body>
 </html>
