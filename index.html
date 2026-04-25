@@ -431,12 +431,12 @@
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;" class="lb-grid">
     <div>
       <div class="section-title">Top 5 🏆</div>
-      <div class="section-sub">Most tasks completed last month</div>
+      <div class="section-sub">Most tasks completed in the last 4 weeks</div>
       <div id="leaderboard-top"></div>
     </div>
     <div>
       <div class="section-title">Bottom 5 😬</div>
-      <div class="section-sub">Fewest tasks completed last month</div>
+      <div class="section-sub">Fewest tasks completed in the last 4 weeks</div>
       <div id="leaderboard-bottom"></div>
     </div>
   </div>
@@ -812,32 +812,52 @@ function renderThisWeek() {
   const thu = new Date(mon); thu.setDate(mon.getDate()+3);
   const DAY_ABBR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-  function taskRow(taskId, label, group) {
+  function taskRow(taskId, label, group, taskDate) {
     const completions = tasks[taskId] || {};
     const completers = Object.entries(completions)
       .sort((a,b) => new Date(a[1].time) - new Date(b[1].time));
     const gi = GROUPS.indexOf(group)+1;
 
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isToday = taskDate && taskDate.toDateString() === today.toDateString();
+    const isPast  = taskDate && taskDate < today;
+
     if (!completers.length) {
-      return `<div class="task-row pending" onclick="openTaskPicker('${taskId}')">
+      if (isToday) {
+        return `<div class="task-row pending" onclick="openTaskPicker('${taskId}')">
+          <span class="task-check">○</span>
+          <div class="task-info">
+            <div class="task-label">${label}</div>
+            <div class="task-pending-by"><span class="gbadge g${gi}b">${group.name}</span> · not done</div>
+          </div>
+          <span class="task-tap">tap ›</span>
+        </div>`;
+      }
+      return `<div class="task-row pending" style="opacity:.45;cursor:default;">
         <span class="task-check">○</span>
         <div class="task-info">
           <div class="task-label">${label}</div>
-          <div class="task-pending-by"><span class="gbadge g${gi}b">${group.name}</span> · not done</div>
+          <div class="task-pending-by"><span class="gbadge g${gi}b">${group.name}</span> · ${isPast ? 'not completed' : 'upcoming'}</div>
         </div>
-        <span class="task-tap">tap ›</span>
       </div>`;
     }
 
     const completersHtml = completers.map(([name, c]) => {
       const dt = new Date(c.time);
       const timeStr = `${pad2(dt.getHours())}:${pad2(dt.getMinutes())}`;
+      const undoBtn = isToday
+        ? `<button class="task-undo" onclick="event.stopPropagation();removeCompleter('${taskId}','${name}')" title="Remove">×</button>`
+        : '';
       return `<div class="task-completer">
         <span class="completer-name">${name}</span>
         <span class="completer-time">· ${timeStr}</span>
-        <button class="task-undo" onclick="event.stopPropagation();removeCompleter('${taskId}','${name}')" title="Remove">×</button>
+        ${undoBtn}
       </div>`;
     }).join('');
+
+    const addBtn = isToday
+      ? `<button class="task-add-more" onclick="openTaskPicker('${taskId}')">+ add</button>`
+      : '';
 
     return `<div class="task-row done">
       <span class="task-check ok">✓</span>
@@ -845,19 +865,20 @@ function renderThisWeek() {
         <div class="task-label">${label}</div>
         <div class="task-completers">${completersHtml}</div>
       </div>
-      <button class="task-add-more" onclick="openTaskPicker('${taskId}')">+ add</button>
+      ${addBtn}
     </div>`;
   }
 
-  let trashHtml = taskRow(`glass_${dateStr(sun)}`,      '⬜ Glass (Sun 8pm)',      tg);
-  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`,   '🔵 Blue bags (Mon)',      tg);
-  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`,   '🟡 Yellow bags (Thu 8am)',tg);
+  const dateFmt = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)}`,       tg, sun);
+  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵 Blue bags · ${dateFmt(mon)}`,   tg, mon);
+  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `🟡 Yellow bags · ${dateFmt(thu)}`, tg, thu);
 
   let dishHtml = '';
   for (let i = 0; i < 7; i++) {
     const d = new Date(mon); d.setDate(mon.getDate()+i);
     const dayFmt = d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-    dishHtml += taskRow(`dish_${dateStr(d)}`, `🍽️ ${DAY_ABBR[i]} ${dayFmt}`, dg);
+    dishHtml += taskRow(`dish_${dateStr(d)}`, `🍽️ ${DAY_ABBR[i]} ${dayFmt}`, dg, d);
   }
 
   document.getElementById('this-week').innerHTML = `
@@ -886,11 +907,10 @@ function renderLeaderboard() {
 
   const tasks = loadTasks();
   const now = new Date();
-  const lmYear  = now.getMonth() === 0 ? now.getFullYear()-1 : now.getFullYear();
-  const lmMonth = now.getMonth() === 0 ? 11 : now.getMonth()-1;
-  const lmStart = new Date(lmYear, lmMonth, 1);
-  const lmEnd   = new Date(lmYear, lmMonth+1, 0, 23, 59, 59);
-  const monthName = lmStart.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const lmStart = new Date(now - 28 * 24 * 3600 * 1000);
+  const lmEnd   = now;
+  const fmtDate = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const monthName = `${fmtDate(lmStart)} – ${fmtDate(lmEnd)}`;
 
   // Seed all residents with 0 so everyone appears in bottom 5
   const allNames = GROUPS.flatMap(g => g.members.map(m => m.name));
