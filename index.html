@@ -915,11 +915,14 @@ function renderLeaderboard() {
   // Seed all residents with 0 so everyone appears in bottom 5
   const allNames = GROUPS.flatMap(g => g.members.map(m => m.name));
   const counts = Object.fromEntries(allNames.map(n => [n, 0]));
-  for (const completion of Object.values(tasks)) {
-    if (!completion?.time) continue;
-    const t = new Date(completion.time);
-    if (t >= lmStart && t <= lmEnd) {
-      counts[completion.name] = (counts[completion.name] || 0) + 1;
+  for (const completions of Object.values(tasks)) {
+    if (!completions || typeof completions !== 'object') continue;
+    for (const [name, c] of Object.entries(completions)) {
+      if (!c?.time) continue;
+      const t = new Date(c.time);
+      if (t >= lmStart && t <= lmEnd) {
+        counts[name] = (counts[name] || 0) + 1;
+      }
     }
   }
 
