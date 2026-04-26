@@ -249,9 +249,9 @@
   <nav class="nav">
     <button class="nav-btn active" onclick="showTab('home',this)">Home</button>
     <button class="nav-btn" onclick="showTab('calendar',this)">Calendar</button>
-    <button class="nav-btn" onclick="showTab('residents',this)">Residents</button>
     <button class="nav-btn" onclick="showTab('newcomer',this)">Newcomer Guide</button>
     <button class="nav-btn" onclick="showTab('leaderboard',this)">Leaderboard</button>
+    <button class="nav-btn" onclick="showTab('residents',this)">Residents</button>
     <button class="nav-btn" onclick="showTab('secrets',this)" style="display:none">⚙️ Email Setup</button>
   </nav>
 </div>
@@ -279,12 +279,13 @@
     <div class="card">
       <div class="card-title"><div class="card-icon">🗑️</div>Commune Collection Days</div>
       <div style="font-size:13px;color:var(--text-mid);line-height:1.9;">
+        ⬜ <strong>Sunday</strong> — Glass bags (put out at 8pm)<br>
         🔵⬜ <strong>Monday</strong> — Blue bags (PMC) + White bags<br>
-        🟡⬜ <strong>Thursday</strong> — Yellow bags (paper / cardboard) + White bags<br>
-        🟢🟠 <strong>Friday</strong> — Green bags (organic) + Orange bags
+        ⬜ <strong>Thursday</strong> — White bags only (put out at 6pm)<br>
+        🟠 <strong>Friday</strong> — Orange bags
       </div>
       <div style="margin-top:12px;padding:9px 12px;background:rgba(196,151,58,.08);border-radius:7px;border:1px solid rgba(196,151,58,.2);font-size:12px;color:#8a6020;">
-        ⏰ <strong>Mon & Thu:</strong> put bags out the evening before (6pm–midnight) · <strong>Fri:</strong> put out between 5am and noon
+        ⏰ <strong>Sun:</strong> glass out at 8pm · <strong>Mon:</strong> bags out evening before (6pm–midnight) · <strong>Thu:</strong> white bags out at 6pm · <strong>Fri:</strong> out between 5am and noon
       </div>
     </div>
 
@@ -402,8 +403,6 @@
         <li>House WhatsApp group</li>
       </ul>
     </div>
-  </div>
-  <div class="info-grid" style="margin-top:24px;">
     <div class="info-card" style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
       <div>
         <h3 style="margin-bottom:6px;">📄 Cohabs Welcome Guide</h3>
@@ -584,105 +583,105 @@ const REF_MONDAY = new Date('2025-02-09');
 // Dishwasher from spreadsheet: 2,4,1,3,5,2,4,1,3,5… = trashGroup+1 (mod 5) ✓
 
 const TRASH_SCHEDULE = [
-  {date:'2025-02-09', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-02-16', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-02-23', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-03-02', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-03-09', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-03-16', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-03-23', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-03-30', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-04-06', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-04-13', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-04-20', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-04-27', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-05-04', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-05-11', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-05-18', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-05-25', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-06-01', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-06-08', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-06-15', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-06-22', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-06-29', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-07-06', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-07-13', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-07-20', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-07-27', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-08-03', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-08-10', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-08-17', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-08-24', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-08-31', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-09-07', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-09-14', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-09-21', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-09-28', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-10-05', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-10-12', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-10-19', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-10-26', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-11-02', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-11-09', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-11-16', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-11-23', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-11-30', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-12-07', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-12-14', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-12-21', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2025-12-28', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-01-04', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-01-11', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-01-18', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-01-25', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-02-01', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-02-08', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-02-15', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-02-22', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-03-01', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-03-08', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-03-15', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-03-22', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-03-29', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-04-05', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-04-12', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-04-19', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-04-26', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-05-03', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-05-10', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-05-17', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-05-24', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-05-31', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-06-07', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-06-14', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-06-21', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-06-28', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-07-05', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-07-12', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-07-19', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-07-26', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-08-02', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-08-09', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-08-16', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-08-23', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-08-30', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-09-06', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-09-13', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-09-20', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-09-27', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-10-04', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-10-11', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-10-18', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-10-25', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-11-01', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-11-08', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-11-15', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-11-22', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-11-29', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-12-06', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-12-13', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-12-20', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
-  {date:'2026-12-27', type:'blue', label:'Blue (Mon) · Yellow (Thu) · Green (Fri)'},
+  {date:'2025-02-09', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-02-16', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-02-23', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-03-02', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-03-09', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-03-16', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-03-23', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-03-30', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-04-06', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-04-13', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-04-20', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-04-27', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-05-04', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-05-11', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-05-18', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-05-25', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-06-01', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-06-08', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-06-15', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-06-22', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-06-29', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-07-06', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-07-13', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-07-20', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-07-27', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-08-03', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-08-10', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-08-17', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-08-24', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-08-31', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-09-07', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-09-14', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-09-21', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-09-28', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-10-05', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-10-12', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-10-19', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-10-26', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-11-02', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-11-09', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-11-16', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-11-23', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-11-30', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-12-07', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-12-14', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-12-21', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2025-12-28', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-01-04', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-01-11', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-01-18', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-01-25', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-02-01', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-02-08', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-02-15', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-02-22', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-03-01', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-03-08', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-03-15', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-03-22', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-03-29', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-04-05', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-04-12', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-04-19', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-04-26', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-05-03', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-05-10', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-05-17', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-05-24', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-05-31', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-06-07', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-06-14', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-06-21', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-06-28', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-07-05', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-07-12', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-07-19', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-07-26', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-08-02', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-08-09', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-08-16', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-08-23', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-08-30', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-09-06', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-09-13', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-09-20', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-09-27', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-10-04', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-10-11', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-10-18', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-10-25', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-11-01', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-11-08', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-11-15', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-11-22', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-11-29', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-12-06', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-12-13', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-12-20', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
+  {date:'2026-12-27', type:'blue', label:'Blue+White (Mon) · White (Thu) · Orange (Fri)'},
 ];
 
 const HOUSE_RULES = [
@@ -874,7 +873,7 @@ function renderThisWeek() {
   const dateFmt = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)}`,       tg, sun);
   trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵 Blue bags · ${dateFmt(mon)}`,   tg, mon);
-  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `🟡 Yellow bags · ${dateFmt(thu)}`, tg, thu);
+  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)}`, tg, thu);
 
   let dishHtml = '';
   for (let i = 0; i < 7; i++) {
@@ -1063,8 +1062,9 @@ function renderMonthlyView() {
 
     let badges = `<span class="cal-badge dish">🍽️ G${dgi}</span>`;
     if (dow === 1) badges += `<span class="cal-badge trash">🔵 G${tgi}</span>`;
-    if (dow === 4) badges += `<span class="cal-badge trash">🟡 G${tgi}</span>`;
-    if (dow === 5) badges += `<span class="cal-badge trash">🟢 G${tgi}</span>`;
+    if (dow === 0) badges += `<span class="cal-badge trash">⬜ G${tgi}</span>`;
+    if (dow === 4) badges += `<span class="cal-badge trash">⬜ G${tgi}</span>`;
+    if (dow === 5) badges += `<span class="cal-badge trash">🟠 G${tgi}</span>`;
 
     html += `<div class="month-cell${isThisMonth ? '' : ' other-month'}${isToday ? ' today' : ''}">
       <div class="month-cell-num">${cur.getDate()}</div>
@@ -1105,8 +1105,8 @@ function renderTableView() {
         </td>
         <td style="font-size:12px;line-height:1.8;">
           🔵 Blue · <strong>${fmt(mon)}</strong><br>
-          🟡 Yellow · <strong>${fmt(thu)}</strong><br>
-          🟢 Green · <strong>${fmt(fri)}</strong>
+          ⬜ White · <strong>${fmt(thu)}</strong><br>
+          🟠 Orange · <strong>${fmt(fri)}</strong>
         </td>
         <td>
           <span class="gbadge g${dgi}b">${dg.name}</span>
@@ -1226,10 +1226,10 @@ function exportGroupICS(gid, cancel) {
         `⬜ Glass out — ${g.name}`,  `Put glass outside Sunday evening at 8pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-blue@jb4`,   fmtDT(mon,18), fmtDT(mon,18,30),
         `🔵 Blue bags out — ${g.name}`, `Put blue/PMC bags outside. ${mem}`);
-      events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,8),  fmtDT(thu,8,30),
-        `🟡 Yellow bags out — ${g.name}`, `Put yellow bags outside Thursday morning. ${mem}`);
+      events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,18),  fmtDT(thu,18,30),
+        `⬜ White bags out — ${g.name}`, `Put white bags outside Thursday at 6pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-green@jb4`,  fmtDT(fri,18), fmtDT(fri,18,30),
-        `🟢 Green bags out — ${g.name}`, `Put green/organic bags outside. ${mem}`);
+        `🟠 Orange bags out — ${g.name}`, `Put orange bags outside. ${mem}`);
     }
 
     if (dg.id === gid) {
