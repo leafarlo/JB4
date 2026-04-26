@@ -10,6 +10,11 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<!-- GoatCounter analytics — replace YOUR_CODE with your goatcounter.com subdomain -->
+<script data-goatcounter="https://jb4.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+
 <style>
   :root {
     --green-deep: #1a2e1a;
@@ -1301,6 +1306,7 @@ function showTab(id, btn) {
   document.getElementById('tab-'+id).classList.add('active');
   if (btn) btn.classList.add('active');
   if (id === 'newcomer') initMap();
+  if (window.goatcounter?.count) window.goatcounter.count({ path: '/' + id, title: id });
 }
 
 // ══════════════════════════════════════════════
