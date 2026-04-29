@@ -814,7 +814,7 @@ function renderThisWeek() {
 
   const pad2 = n => String(n).padStart(2,'0');
   const dateStr = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-  const sun = new Date(mon); sun.setDate(mon.getDate()-1);
+  const sun = new Date(mon); sun.setDate(mon.getDate()+6);
   const thu = new Date(mon); thu.setDate(mon.getDate()+3);
   const DAY_ABBR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
@@ -877,7 +877,7 @@ function renderThisWeek() {
 
   const dateFmt = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)}`,       tg, sun);
-  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵 Blue bags · ${dateFmt(mon)}`,   tg, mon);
+  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)}`, tg, mon);
   trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)}`, tg, thu);
 
   let dishHtml = '';
