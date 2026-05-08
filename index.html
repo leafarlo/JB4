@@ -995,10 +995,10 @@ function renderThisWeek() {
   }
 
   const dateFmt = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-  let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)}`,       tg, sun);
-  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)}`, tg, mon);
-  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)}`, tg, thu);
-  trashHtml    += taskRow(`trash_fri_${dateStr(fri)}`, `🟠 Orange bags · ${dateFmt(fri)}`, tg, fri);
+  let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)} · out at 8pm`,                    tg, sun);
+  trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)} · out eve before, 6pm–midnight`, tg, mon);
+  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)} · out eve before, 6pm`,      tg, thu);
+  trashHtml    += taskRow(`trash_fri_${dateStr(fri)}`, `🟠 Orange bags · ${dateFmt(fri)} · out 5am–noon`,            tg, fri);
 
   let dishHtml = '';
   for (let i = 0; i < 7; i++) {
