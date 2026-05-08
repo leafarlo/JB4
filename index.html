@@ -934,6 +934,7 @@ function renderThisWeek() {
   const dateStr = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
   const sun = new Date(mon); sun.setDate(mon.getDate()+6);
   const thu = new Date(mon); thu.setDate(mon.getDate()+3);
+  const fri = new Date(mon); fri.setDate(mon.getDate()+4);
   const DAY_ABBR = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
   function taskRow(taskId, label, group, taskDate) {
@@ -997,6 +998,7 @@ function renderThisWeek() {
   let trashHtml = taskRow(`glass_${dateStr(sun)}`,    `⬜ Glass · ${dateFmt(sun)}`,       tg, sun);
   trashHtml    += taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)}`, tg, mon);
   trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)}`, tg, thu);
+  trashHtml    += taskRow(`trash_fri_${dateStr(fri)}`, `🟠 Orange bags · ${dateFmt(fri)}`, tg, fri);
 
   let dishHtml = '';
   for (let i = 0; i < 7; i++) {
