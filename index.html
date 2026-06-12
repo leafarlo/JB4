@@ -294,6 +294,9 @@
   @media(max-width:900px){ .lb-grid{ grid-template-columns:1fr !important; } }
   @keyframes lb-wave { 0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(196,151,58,0)} 40%{transform:scale(1.07);box-shadow:0 0 0 6px rgba(196,151,58,.22)} 70%{transform:scale(1.02);box-shadow:0 0 0 11px rgba(196,151,58,0)} }
   .btn-lb-wave { animation: lb-wave 2.8s ease-in-out infinite; }
+  .lb-mode-btn { padding:6px 16px; border-radius:20px; border:1px solid var(--green-muted); background:transparent; color:var(--text-mid); font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; transition:all .15s; }
+  .lb-mode-btn.active { background:var(--green-light); border-color:var(--green-light); color:#fff; font-weight:600; }
+  .lb-mode-btn:not(.active):hover { background:var(--green-pale); }
 </style>
 </head>
 <body>
@@ -545,15 +548,19 @@
 
 <!-- ══════════ LEADERBOARD ══════════ -->
 <div class="tab-panel" id="tab-leaderboard">
+  <div style="display:flex;justify-content:center;gap:6px;margin-bottom:24px;">
+    <button class="lb-mode-btn active" data-mode="recent" onclick="setLbMode('recent')">Last 4 weeks</button>
+    <button class="lb-mode-btn" data-mode="alltime" onclick="setLbMode('alltime')">All time</button>
+  </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;" class="lb-grid">
     <div>
       <div class="section-title">Top 5 🏆</div>
-      <div class="section-sub">Most tasks completed in the last 4 weeks</div>
+      <div class="section-sub" id="lb-sub-top">Most tasks completed in the last 4 weeks</div>
       <div id="leaderboard-top"></div>
     </div>
     <div>
       <div class="section-title">Bottom 5 😬</div>
-      <div class="section-sub">Fewest tasks completed in the last 4 weeks</div>
+      <div class="section-sub" id="lb-sub-bot">Fewest tasks completed in the last 4 weeks</div>
       <div id="leaderboard-bottom"></div>
     </div>
   </div>
@@ -999,7 +1006,7 @@ function renderThisWeek() {
 
   const dateFmt = d => d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   let trashHtml = taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)}`, tg, mon);
-  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜ White bags · ${dateFmt(thu)}`,   tg, thu);
+  trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜🟡 White + Yellow bags · ${dateFmt(thu)}`,   tg, thu);
   trashHtml    += taskRow(`trash_fri_${dateStr(fri)}`, `🟠 Orange bags · ${dateFmt(fri)}`,  tg, fri);
   trashHtml    += taskRow(`glass_${dateStr(sun)}`,     `⬜ Glass · ${dateFmt(sun)}`,         tg, sun);
 
@@ -1029,6 +1036,16 @@ function renderThisWeek() {
 // ══════════════════════════════════════════════
 // RENDER: LEADERBOARD
 // ══════════════════════════════════════════════
+let lbMode = 'recent'; // 'recent' | 'alltime'
+
+function setLbMode(mode) {
+  lbMode = mode;
+  document.querySelectorAll('.lb-mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  renderLeaderboard();
+}
+
 function renderLeaderboard() {
   const elTop = document.getElementById('leaderboard-top');
   const elBot = document.getElementById('leaderboard-bottom');
@@ -1039,21 +1056,30 @@ function renderLeaderboard() {
   const lmStart = new Date(now - 28 * 24 * 3600 * 1000);
   const lmEnd   = now;
   const fmtDate = d => d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
-  const monthName = `${fmtDate(lmStart)} – ${fmtDate(lmEnd)}`;
+  const periodLabel = lbMode === 'recent'
+    ? `${fmtDate(lmStart)} – ${fmtDate(lmEnd)}`
+    : 'All time';
+  const subText = lbMode === 'recent' ? 'in the last 4 weeks' : 'of all time';
+  const elSubTop = document.getElementById('lb-sub-top');
+  const elSubBot = document.getElementById('lb-sub-bot');
+  if (elSubTop) elSubTop.textContent = `Most tasks completed ${subText}`;
+  if (elSubBot) elSubBot.textContent = `Fewest tasks completed ${subText}`;
 
   // Seed all residents with 0 so everyone appears in bottom 5
   const allNames = GROUPS.flatMap(g => g.members.map(m => m.name));
   const currentResidents = new Set(allNames);
   const counts = Object.fromEntries(allNames.map(n => [n, 0]));
-  for (const completions of Object.values(tasks)) {
+  for (const [taskId, completions] of Object.entries(tasks)) {
     if (!completions || typeof completions !== 'object') continue;
+    const taskDate = new Date(taskId.slice(-10));
     for (const [name, c] of Object.entries(completions)) {
       if (!currentResidents.has(name)) continue;
-      if (!c?.time) continue;
-      const t = new Date(c.time);
-      if (t >= lmStart && t <= lmEnd) {
-        counts[name] += 1;
+      if (typeof c !== 'object' || c === null) continue;
+      if (lbMode === 'recent') {
+        const t = c?.time ? new Date(c.time) : taskDate;
+        if (!(t >= lmStart && t <= lmEnd)) continue;
       }
+      counts[name] += 1;
     }
   }
 
@@ -1088,16 +1114,16 @@ function renderLeaderboard() {
     </div>`;
   }
 
-  const monthLabel = `<div class="lb-month">${monthName}</div>`;
+  const periodDiv = `<div class="lb-month">${periodLabel}</div>`;
 
   if (!anyDone) {
-    elTop.innerHTML = `<div class="lb-empty">No tasks completed in <strong>${monthName}</strong> yet.</div>`;
-    elBot.innerHTML = `<div class="lb-empty">Complete tasks this month — you'll appear here next month!</div>`;
+    elTop.innerHTML = `<div class="lb-empty">No tasks completed ${subText} yet.</div>`;
+    elBot.innerHTML = `<div class="lb-empty">Complete tasks — you'll appear here!</div>`;
     return;
   }
 
-  elTop.innerHTML = monthLabel + top5.map(topRow).join('');
-  elBot.innerHTML = monthLabel + bot5.map(botRow).join('');
+  elTop.innerHTML = periodDiv + top5.map(topRow).join('');
+  elBot.innerHTML = periodDiv + bot5.map(botRow).join('');
 }
 
 // ══════════════════════════════════════════════
