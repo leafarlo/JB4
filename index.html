@@ -386,13 +386,13 @@
     <div class="card">
       <div class="card-title"><div class="card-icon">🗑️</div>Commune Collection Days</div>
       <div style="font-size:13px;color:var(--text-mid);line-height:1.9;">
-        ⬜ <strong>Sunday</strong> — Glass bags (put out at 8pm)<br>
+        🟩 <strong>Sunday</strong> — Glass bin (put out at 8pm)<br>
         🔵⬜ <strong>Monday</strong> — Blue bags (PMC) + White bags<br>
         🟡⬜ <strong>Thursday</strong> — White bags + Yellow (paper) bags (put out at 6pm)<br>
         🟠 <strong>Friday</strong> — Orange bags
       </div>
       <div style="margin-top:12px;padding:9px 12px;background:rgba(196,151,58,.08);border-radius:7px;border:1px solid rgba(196,151,58,.2);font-size:12px;color:#8a6020;">
-        ⏰ <strong>Sun:</strong> glass out at 8pm · <strong>Mon:</strong> bags out evening before (6pm–midnight) · <strong>Thu:</strong> white + yellow (paper) bags out at 6pm · <strong>Fri:</strong> out between 5am and noon
+        ⏰ <strong>Sun:</strong> glass bin out at 8pm · <strong>Mon:</strong> bags out evening before (6pm–midnight) · <strong>Thu:</strong> white + yellow (paper) bags out at 6pm · <strong>Fri:</strong> out between 5am and noon
       </div>
     </div>
 
@@ -823,8 +823,8 @@ const TRASH_SCHEDULE = [
 const HOUSE_RULES = [
   {n:'01', t:'<strong>Quiet hours</strong> are 11pm to 8am. Be mindful of neighbours above, below, and beside you.'},
   {n:'02', t:'<strong>No smoking</strong> indoors at any time.'},
-  {n:'04', t:'<strong>Common areas</strong> must be left clean immediately after use: kitchen and tv room.'},
-  {n:'05', t:'<strong>Label your shelf</strong> in the fridge. Never use items that are not yours.'},
+  {n:'04', t:'<strong>Common areas</strong> must be left clean immediately after use: Kitchen, Living room, Gym and Cinema.'},
+  {n:'05', t:'<strong>Label your cabinet and shelf</strong> in the fridge. Never use items that are not yours.'},
   {n:'06', t:'<strong>Duty groups</strong> rotate weekly. Swaps are allowed, just communicate them :).'},
   {n:'07', t:'<strong>Trash</strong> Mon/Thu: bags out the evening before (6pm–midnight). Friday: out by 9:00 AM, check the calendar.'},
 {n:'08', t:'<strong>Dishwasher</strong> must be emptied daily by the duty group.<br><strong style="color:#c0392b;">Important</strong>: regularly check the salt and cleaning reserve of the dishwasher'},
@@ -863,7 +863,7 @@ function fmtShort(d) {
 }
 function names(g) { return g.members.map(m=>m.name).join(', '); }
 function bagClass(t) { return {blue:'blue-t',yellow:'yellow-t',green:'green-t',glass:'glass-t'}[t]||'blue-t'; }
-function bagEmoji(t) { return {blue:'🔵',yellow:'🟡',green:'🟢',glass:'⬜',bulk:'🟫'}[t]||'🗑️'; }
+function bagEmoji(t) { return {blue:'🔵',yellow:'🟡',green:'🟩',glass:'⬜',bulk:'🟫'}[t]||'🗑️'; }
 
 // ══════════════════════════════════════════════
 // RENDER: TICKER
@@ -1021,7 +1021,7 @@ function renderThisWeek() {
   let trashHtml = taskRow(`trash_mon_${dateStr(mon)}`, `🔵⬜ Blue + White · ${dateFmt(mon)}`, tg, mon);
   trashHtml    += taskRow(`trash_thu_${dateStr(thu)}`, `⬜🟡 White + Yellow bags · ${dateFmt(thu)}`,   tg, thu);
   trashHtml    += taskRow(`trash_fri_${dateStr(fri)}`, `🟠 Orange bags · ${dateFmt(fri)}`,  tg, fri);
-  trashHtml    += taskRow(`glass_${dateStr(sun)}`,     `⬜ Glass · ${dateFmt(sun)}`,         tg, sun);
+  trashHtml    += taskRow(`glass_${dateStr(sun)}`,     `🟩 Glass · ${dateFmt(sun)}`,         tg, sun);
 
   let dishHtml = '';
   for (let i = 0; i < 7; i++) {
@@ -1432,7 +1432,7 @@ const TUTORIAL_CHAPTERS = [
         <div class="tut-grid">
           <div class="tut-card dark">
             <div style="font-family:'Playfair Display',serif;color:var(--gold-light);font-size:18px;margin-bottom:10px;">This Week's Duties</div>
-            <div class="tut-task"><span>○</span><span>⬜ Glass · Sunday</span></div>
+            <div class="tut-task"><span>○</span><span>🟩 Glass · Sunday</span></div>
             <div class="tut-task"><span>○</span><span>🔵⬜ Blue + White · Monday</span></div>
             <div class="tut-task done"><span>✓</span><span>🍽️ Dishwasher · Today</span></div>
           </div>
@@ -1669,7 +1669,7 @@ function exportGroupICS(gid, cancel) {
 
     if (tg.id === gid) {
       events += vevent(`${gid}-${t.date}-glass@jb4`,  fmtDT(sun,20), fmtDT(sun,20,30),
-        `⬜ Glass out — ${g.name}`,  `Put glass outside Sunday evening at 8pm. ${mem}`);
+        `🟩 Glass out — ${g.name}`,  `Put glass bin outside Sunday evening at 8pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-blue@jb4`,   fmtDT(mon,18), fmtDT(mon,18,30),
         `🔵 Blue bags out — ${g.name}`, `Put blue/PMC bags outside. ${mem}`);
       events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,18),  fmtDT(thu,18,30),
