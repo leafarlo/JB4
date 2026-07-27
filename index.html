@@ -1236,7 +1236,7 @@ function renderMonthlyView() {
     let badges = `<span class="cal-badge dish">🍽️ G${dgi}</span>`;
     if (dow === 1) badges += `<span class="cal-badge trash">🔵⬜️ G${tgi}</span>`;
     if (dow === 0) badges += `<span class="cal-badge trash">🟩 G${tgi}</span>`;
-    if (dow === 4) badges += `<span class="cal-badge trash">⬜ G${tgi}</span>`;
+    if (dow === 4) badges += `<span class="cal-badge trash">🟡⬜ G${tgi}</span>`;
     if (dow === 5) badges += `<span class="cal-badge trash">🟠 G${tgi}</span>`;
 
     html += `<div class="month-cell${isThisMonth ? '' : ' other-month'}${isToday ? ' today' : ''}">
