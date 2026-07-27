@@ -1234,8 +1234,8 @@ function renderMonthlyView() {
     const dgi = GROUPS.indexOf(dg) + 1;
 
     let badges = `<span class="cal-badge dish">🍽️ G${dgi}</span>`;
-    if (dow === 1) badges += `<span class="cal-badge trash">🔵 G${tgi}</span>`;
-    if (dow === 0) badges += `<span class="cal-badge trash">⬜ G${tgi}</span>`;
+    if (dow === 1) badges += `<span class="cal-badge trash">🔵⬜️ G${tgi}</span>`;
+    if (dow === 0) badges += `<span class="cal-badge trash">🟩 G${tgi}</span>`;
     if (dow === 4) badges += `<span class="cal-badge trash">⬜ G${tgi}</span>`;
     if (dow === 5) badges += `<span class="cal-badge trash">🟠 G${tgi}</span>`;
 
