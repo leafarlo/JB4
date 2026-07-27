@@ -1279,7 +1279,7 @@ function renderTableView() {
         <td style="font-size:12px;line-height:1.8;">
           🟩 Glass · <strong>${fmt(sun)}</strong><br>
           🔵⬜️ Blue + White · <strong>${fmt(mon)}</strong><br>
-          🟡⬜ Yello + White · <strong>${fmt(thu)}</strong><br>
+          🟡⬜ Yellow + White · <strong>${fmt(thu)}</strong><br>
           🟠 Orange · <strong>${fmt(fri)}</strong>
         </td>
         <td>
@@ -1676,7 +1676,7 @@ function exportGroupICS(gid, cancel) {
       events += vevent(`${gid}-${t.date}-glass@jb4`,  fmtDT(sun,20), fmtDT(sun,20,30),
         `🟩 Glass out — ${g.name}`,  `Put glass bin outside Sunday evening at 8pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-blue@jb4`,   fmtDT(mon,18), fmtDT(mon,18,30),
-        `🔵 Blue bags out — ${g.name}`, `Put blue/PMC bags outside. ${mem}`);
+        `🔵⬜️ Blue+White bags out — ${g.name}`, `Put blue/PMC and white bags outside. ${mem}`);
       events += vevent(`${gid}-${t.date}-yellow@jb4`, fmtDT(thu,18),  fmtDT(thu,18,30),
         `🟡⬜ White+Yellow bags out — ${g.name}`, `Put white + yellow (paper) bags outside Thursday at 6pm. ${mem}`);
       events += vevent(`${gid}-${t.date}-green@jb4`,  fmtDT(fri,18), fmtDT(fri,18,30),
